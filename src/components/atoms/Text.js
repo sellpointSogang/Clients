@@ -7,7 +7,7 @@ export const Text = ({
   children,
   variant,
   spacing = "-0px",
-  font = "Noto Sans KR",
+  font = "Pretendard",
   cursor = "auto",
   lineHeight = "120%",
   align = "center",

@@ -2,7 +2,7 @@ import React from "react";
 import { styled } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartLine, faUser } from "@fortawesome/free-solid-svg-icons";
-
+import Flex from "../../components/atoms/Flex";
 const SearchResults = () => {
   return (
     <SearchResultsDiv>
@@ -62,7 +62,6 @@ const SearchResults = () => {
 
 const SearchResultsDiv = styled.div`
   display: flex;
-  justify-content: left;
   flex-direction: column;
 `;
 
