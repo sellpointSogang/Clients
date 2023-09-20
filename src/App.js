@@ -1,4 +1,4 @@
-import GlobalStyle from "./Style/GlobalStyle";
+import GlobalStyle from "./styles/GlobalStyle";
 import Router from "./Router";
 import styled from "styled-components";
 
