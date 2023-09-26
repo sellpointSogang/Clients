@@ -7,12 +7,13 @@ export const Text = ({
   children,
   variant,
   spacing = "-0px",
-  font = "Noto Sans KR",
+  font = "Pretendard",
   cursor = "auto",
   lineHeight = "120%",
   align = "center",
   isCut = false,
   cutLine = 1,
+  textDecoration = "none",
   onClick = () => {
     return;
   },
@@ -31,6 +32,7 @@ export const Text = ({
       cursor={cursor}
       lineHeight={lineHeight}
       cutLine={cutLine}
+      textDecoration={textDecoration}
     >
       {children}
     </StyledText>
@@ -38,6 +40,7 @@ export const Text = ({
 };
 
 const StyledText = styled.span`
+  text-decoration: ${({ textDecoration }) => textDecoration};
   word-wrap: break-word;
   font-family: ${({ font }) => font};
   text-align: ${({ align }) => align};

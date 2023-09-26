@@ -1,7 +1,7 @@
-import GlobalStyle from "./Style/GlobalStyle";
+import GlobalStyle from "./styles/GlobalStyle";
 import Router from "./Router";
 import styled from "styled-components";
-
+import AppContainer from "@components/templates/AppContainer";
 function App() {
   return (
     <>
@@ -12,9 +12,5 @@ function App() {
     </>
   );
 }
-
-const AppContainer = styled.div`
-  max-width: 1920px;
-`;
 
 export default App;
