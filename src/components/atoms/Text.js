@@ -13,6 +13,7 @@ export const Text = ({
   align = "center",
   isCut = false,
   cutLine = 1,
+  textDecoration = "none",
   onClick = () => {
     return;
   },
@@ -31,6 +32,7 @@ export const Text = ({
       cursor={cursor}
       lineHeight={lineHeight}
       cutLine={cutLine}
+      textDecoration={textDecoration}
     >
       {children}
     </StyledText>
@@ -38,6 +40,7 @@ export const Text = ({
 };
 
 const StyledText = styled.span`
+  text-decoration: ${({ textDecoration }) => textDecoration};
   word-wrap: break-word;
   font-family: ${({ font }) => font};
   text-align: ${({ align }) => align};
