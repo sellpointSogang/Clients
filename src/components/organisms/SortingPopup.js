@@ -8,13 +8,17 @@ import Flex from "@components/atoms/Flex";
 const SortingPopup = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("날짜");
-  const [sortOrder, setSortOrder] = useState("최신 순");
+  const [sortOrders, setSortOrders] = useState({
+    날짜: "최신 순",
+    "평균 적중률": "낮은 순",
+    "리포트 적중률": "낮은 순",
+  });
 
   const popupRef = useRef(null);
 
   const handleCategoryAndSortChange = (category) => {
     handleCategorySelect(category);
-    handleSortOrderChange();
+    handleSortOrderChange(category);
   };
 
   const togglePopup = (event) => {
@@ -24,28 +28,24 @@ const SortingPopup = () => {
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
-
-    // Set the default sort order based on the selected category
-    let defaultSortOrder = "최신 순";
-    if (category === "평균 적중률" || category === "리포트 적중률") {
-      defaultSortOrder = "높은 순";
-    }
-
-    // Update the sort order
-    setSortOrder(defaultSortOrder);
   };
 
-  const handleSortOrderChange = () => {
-    if (
-      selectedCategory === "평균 적중률" ||
-      selectedCategory === "리포트 적중률"
-    ) {
+  const handleSortOrderChange = (category) => {
+    // Copy the current sortOrders state to avoid mutating it directly
+    const newSortOrders = { ...sortOrders };
+
+    if (category === "평균 적중률" || category === "리포트 적중률") {
       // Toggle sorting order between "높은 순" and "낮은 순"
-      setSortOrder(sortOrder === "높은 순" ? "낮은 순" : "높은 순");
+      newSortOrders[category] =
+        sortOrders[category] === "높은 순" ? "낮은 순" : "높은 순";
     } else {
       // Toggle sorting order between "최신 순" and "오래된 순"
-      setSortOrder(sortOrder === "최신 순" ? "오래된 순" : "최신 순");
+      newSortOrders[category] =
+        sortOrders[category] === "최신 순" ? "오래된 순" : "최신 순";
     }
+
+    // Update the sort orders
+    setSortOrders(newSortOrders);
   };
 
   useEffect(() => {
@@ -74,18 +74,13 @@ const SortingPopup = () => {
       <PopupTrigger onClick={togglePopup}>
         <span>
           <Text size={"14"} weight={"600"}>
-            {selectedCategory} {sortOrder}
+            {selectedCategory} {sortOrders[selectedCategory]}
           </Text>
         </span>
         <FontAwesomeIcon icon={faSort} />
       </PopupTrigger>
       {isOpen && (
         <Popup ref={popupRef} onClick={(e) => e.stopPropagation()}>
-          <TitleDiv>
-            <Text size={"13"} weight={"700"}>
-              정렬 방식
-            </Text>
-          </TitleDiv>
           <CategoryList>
             <CategoryItem
               onClick={() => handleCategoryAndSortChange("날짜")}
@@ -97,7 +92,7 @@ const SortingPopup = () => {
                 </Text>
                 {selectedCategory === "날짜" && (
                   <Text size={"12"} weight={"500"}>
-                    {sortOrder}
+                    {sortOrders["날짜"]}
                   </Text>
                 )}
               </Flex>
@@ -113,7 +108,7 @@ const SortingPopup = () => {
                 </Text>
                 {selectedCategory === "평균 적중률" && (
                   <Text size={"12"} weight={"500"}>
-                    {sortOrder}
+                    {sortOrders["평균 적중률"]}
                   </Text>
                 )}
               </Flex>
@@ -128,7 +123,7 @@ const SortingPopup = () => {
                 </Text>
                 {selectedCategory === "리포트 적중률" && (
                   <Text size={"12"} weight={"500"}>
-                    {sortOrder}
+                    {sortOrders["리포트 적중률"]}
                   </Text>
                 )}
               </Flex>
@@ -161,7 +156,7 @@ const Popup = styled.div`
   box-shadow: 2px 2px 20px -5px rgba(0, 0, 0, 0.25);
   width: 180px;
   z-index: 1;
-  padding: 5px;
+  padding: 0px 5px 5px 5px;
 `;
 
 const CategoryList = styled.ul`
@@ -178,11 +173,6 @@ const CategoryItem = styled.li`
     background-color: #f0f0f0;
   }
   margin-top: 5px;
-`;
-
-const TitleDiv = styled.div`
-  padding-top: 17px;
-  padding-bottom: 10px;
 `;
 
 export default SortingPopup;

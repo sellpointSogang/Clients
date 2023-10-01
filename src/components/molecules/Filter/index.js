@@ -1,43 +1,29 @@
 import React, { useState, useRef, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faFilter,
   faCaretDown,
-  faAngleDown,
+  faCaretUp, // Import the caret up icon
+  faCalendar,
+  faMagnifyingGlassDollar,
+  faFile,
 } from "@fortawesome/free-solid-svg-icons";
 import Flex from "@components/atoms/Flex";
-import { Text } from "@components/atoms/Text";
 import { palette } from "@styles/palette";
 import styled from "styled-components";
-import {
-  FilterDate,
-  FilterReport,
-  FilterReportRate,
-} from "@components/organisms/FilterRadio";
 import SortingPopup from "@components/organisms/SortingPopup";
 
-const Filter = ({
-  width,
-  height,
-  insideWidth,
-  insideHeight,
-  First,
-  Second,
-  Third,
-}) => {
-  const [isOpenFirst, setIsOpenFirst] = useState(false);
-  const [isOpenSecond, setIsOpenSecond] = useState(false);
-  const [isOpenThird, setIsOpenThird] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(null);
-
+const Filter = ({ width, height, insideWidth, insideHeight }) => {
   const filterRef = useRef(null);
 
   useEffect(() => {
     function handleClickOutside(event) {
       if (filterRef.current && !filterRef.current.contains(event.target)) {
-        setIsOpenFirst(false);
-        setIsOpenSecond(false);
-        setIsOpenThird(false);
+        setIsOpen1(false);
+        setIsOpen2(false);
+        setIsOpen3(false);
+        setCaretIcon1(faCaretDown);
+        setCaretIcon2(faCaretDown);
+        setCaretIcon3(faCaretDown);
       }
     }
 
@@ -47,24 +33,57 @@ const Filter = ({
     };
   }, []);
 
-  const toggleDropdown = (option) => {
-    setSelectedOption(option);
-    setIsOpenFirst(false);
-    setIsOpenSecond(false);
-    setIsOpenThird(false);
+  const [isOpen1, setIsOpen1] = useState(false);
+  const [selectedOption1, setselectedOption1] = useState(null);
+  const [caretIcon1, setCaretIcon1] = useState(faCaretDown); // State to manage the caret icon
+  const [isOpen2, setIsOpen2] = useState(false);
+  const [selectedOption2, setselectedOption2] = useState(null);
+  const [caretIcon2, setCaretIcon2] = useState(faCaretDown);
+  const [isOpen3, setIsOpen3] = useState(false);
+  const [selectedOption3, setselectedOption3] = useState(null);
+  const [caretIcon3, setCaretIcon3] = useState(faCaretDown);
 
-    switch (option) {
-      case "First":
-        setIsOpenFirst(true);
-        break;
-      case "Second":
-        setIsOpenSecond(true);
-        break;
-      case "Third":
-        setIsOpenThird(true);
-        break;
-      default:
-        break;
+  const options1 = [
+    "선택 안 함",
+    "이번 주 내",
+    "이번 달 내",
+    "3개월 내",
+    "6개월 내",
+    "1년 내",
+    "1년 이후",
+  ];
+
+  const options2 = ["선택 안 함", "70% 이상", "50% 이상"];
+
+  const options3 = ["선택 안 함", "Sell", "Buy", "Hold"];
+
+  const toggleDropdown = (filter) => {
+    if (filter === 1) {
+      setIsOpen1(!isOpen1);
+      // Toggle the caret icon
+      setCaretIcon1(isOpen1 ? faCaretDown : faCaretUp);
+    } else if (filter === 2) {
+      setIsOpen2(!isOpen2);
+      setCaretIcon2(isOpen2 ? faCaretDown : faCaretUp);
+    } else if (filter === 3) {
+      setIsOpen3(!isOpen3);
+      setCaretIcon3(isOpen3 ? faCaretDown : faCaretUp);
+    }
+  };
+
+  const handleOptionSelect = (option, filter) => {
+    if (filter === 1) {
+      setselectedOption1(option);
+      setIsOpen1(false);
+      setCaretIcon1(faCaretDown); // Reset the caret icon to down when an option is selected
+    } else if (filter === 2) {
+      setselectedOption2(option);
+      setIsOpen2(false);
+      setCaretIcon2(faCaretDown);
+    } else if (filter === 3) {
+      setselectedOption3(option);
+      setIsOpen3(false);
+      setCaretIcon3(faCaretDown);
     }
   };
 
@@ -79,131 +98,102 @@ const Filter = ({
             width={insideWidth}
             justify="space-between"
           >
-            <Flex
-              direction="row"
-              height="100%"
-              gap={10}
-              justify="center"
-              align="center"
-            >
-              <FontAwesomeIcon
-                icon={faFilter}
-                style={{
-                  fontSize: "20px",
-                  color: "#8C8C8C",
-                }}
-              />
-              <FilterBtn onClick={() => toggleDropdown("First")}>
-                <Flex
-                  direction="row"
-                  justify="space-between"
-                  height="19px"
-                  width="100%"
-                >
-                  <Text color={palette.color_subText} size={14} weight={500}>
-                    {selectedOption === "First" ? First : "날짜"}
-                  </Text>
-                  <FontAwesomeIcon
-                    icon={faCaretDown}
-                    style={{
-                      fontSize: "10px",
-                      color: "#8C8C8C",
-                    }}
-                  />
-                </Flex>
-                {isOpenFirst && (
-                  <FilterDate
-                    selectedDate={selectedOption === "First"}
-                    onSelect={(date) => {
-                      setSelectedOption("First");
-                      setIsOpenFirst(false);
-                    }}
-                  />
-                )}
-              </FilterBtn>
-              <FilterBtn onClick={() => toggleDropdown("Second")}>
-                <Flex
-                  direction="row"
-                  justify="space-between"
-                  height="19px"
-                  width="100%"
-                >
-                  <Text color={palette.color_subText} size={14} weight={500}>
-                    {selectedOption === "Second" ? Second : "리포트 적중률"}
-                  </Text>
-                  <FontAwesomeIcon
-                    icon={faCaretDown}
-                    style={{
-                      fontSize: "10px",
-                      color: "#8C8C8C",
-                    }}
-                  />
-                </Flex>
-                {isOpenSecond && (
-                  <FilterReportRate
-                    selectedReportRate={selectedOption === "Second"}
-                    onSelect={(reportRate) => {
-                      setSelectedOption("Second");
-                      setIsOpenSecond(false);
-                    }}
-                  />
-                )}
-              </FilterBtn>
-              <FilterBtn onClick={() => toggleDropdown("Third")}>
-                <Flex
-                  direction="row"
-                  justify="space-between"
-                  height="19px"
-                  width="100%"
-                >
-                  <Text color={palette.color_subText} size={14} weight={500}>
-                    {selectedOption === "Third" ? Third : "리포트 종류"}
-                  </Text>
-                  <FontAwesomeIcon
-                    icon={faCaretDown}
-                    style={{
-                      fontSize: "10px",
-                      color: "#8C8C8C",
-                    }}
-                  />
-                </Flex>
-                {isOpenThird && (
-                  <FilterReport
-                    selectedReport={selectedOption === "Third"}
-                    onSelect={(report) => {
-                      setSelectedOption("Third");
-                      setIsOpenThird(false);
-                    }}
-                  />
-                )}
-              </FilterBtn>
-            </Flex>
+            {/* Filter 1 */}
+            <FilterSection
+              isOpen={isOpen1}
+              selectedOption={selectedOption1}
+              toggleDropdown={() => toggleDropdown(1)}
+              handleOptionSelect={(option) => handleOptionSelect(option, 1)}
+              options={options1}
+              filterName="날짜"
+              filterIcon={faCalendar}
+              caretIcon={caretIcon1} // Pass the caret icon state
+            />
+
+            {/* Filter 2 */}
+            <FilterSection
+              isOpen={isOpen2}
+              selectedOption={selectedOption2}
+              toggleDropdown={() => toggleDropdown(2)}
+              handleOptionSelect={(option) => handleOptionSelect(option, 2)}
+              options={options2}
+              filterName="리포트 적중률"
+              filterIcon={faMagnifyingGlassDollar}
+              caretIcon={caretIcon2}
+            />
+
+            {/* Filter 3 */}
+            <FilterSection
+              isOpen={isOpen3}
+              selectedOption={selectedOption3}
+              toggleDropdown={() => toggleDropdown(3)}
+              handleOptionSelect={(option) => handleOptionSelect(option, 3)}
+              options={options3}
+              filterName="리포트 종류"
+              filterIcon={faFile}
+              caretIcon={caretIcon3}
+            />
+
             <Flex direction="row" justify="flex-end">
-              {/* <ArrangeBtn>
-                <Flex direction="row" gap={6}>
-                  <Text
-                    weight={600}
-                    size={14}
-                    color={palette.color_mainText}
-                    cursor="pointer"
-                  >
-                    최신 순
-                  </Text>
-                  <FontAwesomeIcon
-                    icon={faAngleDown}
-                    style={{
-                      fontSize: "10px",
-                      color: "black",
-                    }}
-                  />
-                </Flex>
-              </ArrangeBtn> */}
               <SortingPopup />
             </Flex>
           </Flex>
         </InsideContainer>
       </Flex>
     </FilterContainer>
+  );
+};
+
+const FilterSection = ({
+  isOpen,
+  selectedOption,
+  toggleDropdown,
+  handleOptionSelect,
+  options,
+  filterName,
+  filterIcon,
+  caretIcon, // Receive the caret icon from props
+}) => {
+  return (
+    <Flex
+      direction="row"
+      height="100%"
+      gap={10}
+      justify="center"
+      align="center"
+    >
+      <FontAwesomeIcon
+        icon={filterIcon}
+        style={{
+          fontSize: "20px",
+          color: "#8C8C8C",
+        }}
+      />
+      <DropdownContainer>
+        <DropdownButton onClick={toggleDropdown}>
+          {selectedOption === "선택 안 함" || !selectedOption
+            ? filterName
+            : selectedOption}
+          <FontAwesomeIcon
+            icon={caretIcon} // Use the caret icon from props
+            style={{ marginLeft: "5px" }}
+            color="#8c8c8c"
+          />
+        </DropdownButton>
+        {isOpen && (
+          <DropdownList>
+            {options.map((option, index) => (
+              <DropdownItem
+                key={index}
+                onClick={() => handleOptionSelect(option)}
+              >
+                {option}
+              </DropdownItem>
+            ))}
+          </DropdownList>
+        )}
+      </DropdownContainer>
+    </Flex>
   );
 };
 
@@ -221,15 +211,50 @@ const InsideContainer = styled.div`
   height: ${({ insideHeight }) => insideHeight};
 `;
 
-const FilterBtn = styled.div`
-  width: 115px;
+const DropdownContainer = styled.div`
+  position: relative;
+`;
+
+const DropdownButton = styled.button`
+  width: 120px;
   height: 29px;
   border-radius: 20px;
   border: 1px solid #d5d8dc;
+  background-color: white;
   padding: 5px 10px;
   cursor: pointer;
+  text-align: left;
+  padding: 0 10px;
+  display: flex;
+  align-items: center; /* Center the icon vertically */
+  justify-content: space-between; /* Add space between text and icon */
+  font-family: "Pretendard";
+  font-size: 14px;
+  color: #8c8c8c;
 `;
 
-const ArrangeBtn = styled.div`
+const DropdownList = styled.ul`
+  position: absolute;
+  width: 100%;
+  top: 120%;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: 2px 2px 20px -5px rgba(0, 0, 0, 0.25);
+  font-size: 12px;
+  font-family: "Pretendard";
+  text-align: left;
+  z-index: 3;
+`;
+
+const DropdownItem = styled.li`
+  padding: 10px 10px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
 `;
