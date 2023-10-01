@@ -9,6 +9,12 @@ import Flex from "@components/atoms/Flex";
 import { Text } from "@components/atoms/Text";
 import { palette } from "@styles/palette";
 import styled from "styled-components";
+import {
+  FilterDate,
+  FilterReport,
+  FilterReportRate,
+} from "@components/organisms/FilterRadio";
+import SortingPopup from "@components/organisms/SortingPopup";
 
 const Filter = ({
   width,
@@ -19,8 +25,51 @@ const Filter = ({
   Second,
   Third,
 }) => {
+  const [isOpenFirst, setIsOpenFirst] = useState(false);
+  const [isOpenSecond, setIsOpenSecond] = useState(false);
+  const [isOpenThird, setIsOpenThird] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(null);
+
+  const filterRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setIsOpenFirst(false);
+        setIsOpenSecond(false);
+        setIsOpenThird(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const toggleDropdown = (option) => {
+    setSelectedOption(option);
+    setIsOpenFirst(false);
+    setIsOpenSecond(false);
+    setIsOpenThird(false);
+
+    switch (option) {
+      case "First":
+        setIsOpenFirst(true);
+        break;
+      case "Second":
+        setIsOpenSecond(true);
+        break;
+      case "Third":
+        setIsOpenThird(true);
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
-    <FilterContainer width={width} height={height}>
+    <FilterContainer width={width} height={height} ref={filterRef}>
       <Flex height="100%">
         <InsideContainer width={insideWidth} height={insideHeight}>
           <Flex
@@ -44,7 +93,7 @@ const Filter = ({
                   color: "#8C8C8C",
                 }}
               />
-              <FilterBtn>
+              <FilterBtn onClick={() => toggleDropdown("First")}>
                 <Flex
                   direction="row"
                   justify="space-between"
@@ -52,18 +101,27 @@ const Filter = ({
                   width="100%"
                 >
                   <Text color={palette.color_subText} size={14} weight={500}>
-                    {First}
+                    {selectedOption === "First" ? First : "날짜"}
                   </Text>
                   <FontAwesomeIcon
                     icon={faCaretDown}
                     style={{
-                      fontSize: "20px",
+                      fontSize: "10px",
                       color: "#8C8C8C",
                     }}
                   />
                 </Flex>
+                {isOpenFirst && (
+                  <FilterDate
+                    selectedDate={selectedOption === "First"}
+                    onSelect={(date) => {
+                      setSelectedOption("First");
+                      setIsOpenFirst(false);
+                    }}
+                  />
+                )}
               </FilterBtn>
-              <FilterBtn>
+              <FilterBtn onClick={() => toggleDropdown("Second")}>
                 <Flex
                   direction="row"
                   justify="space-between"
@@ -71,18 +129,27 @@ const Filter = ({
                   width="100%"
                 >
                   <Text color={palette.color_subText} size={14} weight={500}>
-                    {Second}
+                    {selectedOption === "Second" ? Second : "리포트 적중률"}
                   </Text>
                   <FontAwesomeIcon
                     icon={faCaretDown}
                     style={{
-                      fontSize: "20px",
+                      fontSize: "10px",
                       color: "#8C8C8C",
                     }}
                   />
                 </Flex>
+                {isOpenSecond && (
+                  <FilterReportRate
+                    selectedReportRate={selectedOption === "Second"}
+                    onSelect={(reportRate) => {
+                      setSelectedOption("Second");
+                      setIsOpenSecond(false);
+                    }}
+                  />
+                )}
               </FilterBtn>
-              <FilterBtn>
+              <FilterBtn onClick={() => toggleDropdown("Third")}>
                 <Flex
                   direction="row"
                   justify="space-between"
@@ -90,20 +157,29 @@ const Filter = ({
                   width="100%"
                 >
                   <Text color={palette.color_subText} size={14} weight={500}>
-                    {Third}
+                    {selectedOption === "Third" ? Third : "리포트 종류"}
                   </Text>
                   <FontAwesomeIcon
                     icon={faCaretDown}
                     style={{
-                      fontSize: "20px",
+                      fontSize: "10px",
                       color: "#8C8C8C",
                     }}
                   />
                 </Flex>
+                {isOpenThird && (
+                  <FilterReport
+                    selectedReport={selectedOption === "Third"}
+                    onSelect={(report) => {
+                      setSelectedOption("Third");
+                      setIsOpenThird(false);
+                    }}
+                  />
+                )}
               </FilterBtn>
             </Flex>
             <Flex direction="row" justify="flex-end">
-              <ArrangeBtn>
+              {/* <ArrangeBtn>
                 <Flex direction="row" gap={6}>
                   <Text
                     weight={600}
@@ -121,7 +197,8 @@ const Filter = ({
                     }}
                   />
                 </Flex>
-              </ArrangeBtn>
+              </ArrangeBtn> */}
+              <SortingPopup />
             </Flex>
           </Flex>
         </InsideContainer>
