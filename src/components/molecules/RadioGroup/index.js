@@ -1,6 +1,6 @@
 function RadioGroup({ label, children }) {
   return (
-    <fieldset>
+    <fieldset style={{ marginTop: "17px" }}>
       <legend>{label}</legend>
       {children}
     </fieldset>
