@@ -2,18 +2,13 @@ import React from "react";
 import styled from "styled-components";
 import Header from "@components/organisms/Header/index";
 import Flex from "@components/atoms/Flex";
-import { Space } from "@components/atoms/Space";
 import { palette } from "@styles/palette";
 import { Text } from "@components/atoms/Text";
 import Bar from "@components/molecules/Bar";
 import SearchInput from "@components/molecules/SearchInput";
 import Filter from "@components/molecules/Filter";
-import {
-  FilterDate,
-  FilterReport,
-  FilterAverageRate,
-  FilterReportRate,
-} from "@components/organisms/FilterRadio";
+import HoverDescription from "@components/organisms/HoverDescription";
+
 const AnalystInfo = () => {
   return (
     <Flex>
@@ -41,9 +36,16 @@ const AnalystInfo = () => {
               <BarWrapper>
                 <Flex gap={15}>
                   <Flex gap={11} align="start">
-                    <Text size={16} weight={600}>
-                      평균 적중률
-                    </Text>
+                    <Flex direction="row" justify="flex-start">
+                      <Text size={16} weight={600}>
+                        평균 적중률
+                      </Text>
+                      <HoverDescription
+                        description={
+                          "애널리스트가 작성한 리포트 예측들이 얼마나 정확했는지를 나타내는 지표입니다. 이는 과거 리포트들의 예측과 실제 시장의 움직임을 비교하여 산출됩니다."
+                        }
+                      />
+                    </Flex>
                     <Bar
                       height="26.5px"
                       percentage="61%"
@@ -57,9 +59,16 @@ const AnalystInfo = () => {
                     </Bar>
                   </Flex>
                   <Flex gap={11} align="start">
-                    <Text size={16} weight={600}>
-                      평균 첫 예측 적중 기간
-                    </Text>
+                    <Flex direction="row" justify="flex-start">
+                      <Text size={16} weight={600}>
+                        평균 첫 예측 적중 기간
+                      </Text>
+                      <HoverDescription
+                        description={
+                          "애널리스트의 리포트 예측이 실제 시장에서 처음으로 맞을 때까지의 소요 시간의 평균을 나타냅니다."
+                        }
+                      />
+                    </Flex>
                     <Bar
                       height="26.5px"
                       percentage="61%"
@@ -73,9 +82,16 @@ const AnalystInfo = () => {
                     </Bar>
                   </Flex>
                   <Flex gap={11} align="start">
-                    <Text size={16} weight={600}>
-                      평균 첫 예측 실패 기간
-                    </Text>
+                    <Flex direction="row" justify="flex-start">
+                      <Text size={16} weight={600}>
+                        평균 첫 예측 실패 기간
+                      </Text>
+                      <HoverDescription
+                        description={
+                          "애널리스트의 리포트 예측이 실제 시장에서 처음으로 틀릴 때까지의 소요 시간의 평균을 나타냅니다."
+                        }
+                      />
+                    </Flex>
                     <Bar
                       height="26.5px"
                       percentage="61%"
@@ -147,6 +163,11 @@ const AnalystInfo = () => {
                   <Text size={16} color={palette.color_subText} weight={800}>
                     리포트 평가 수치
                   </Text>
+                  <HoverDescription
+                    description={
+                      "리포트 적중률\n특정 리포트의 예측이 얼마나 정확했는지를 나타내는 지표입니다. 이는 특정 리포트의 예측과 실제 시장의 움직임을 비교하여 산출됩니다.\n\n첫 예측 적중 기간\n특정 리포트 예측이 실제 시장에서 처음으로 맞을 때까지의 소요 시간을 나타냅니다.\n\n첫 예측 실패 기간\n특정 리포트 예측이 실제 시장에서 처음으로 틀릴 때까지의 소요 시간을 나타냅니다."
+                    }
+                  />
                 </Flex>
               </Flex>
               <ContentsBox>
@@ -904,6 +925,7 @@ const SecondWrapper = styled.div`
   background-color: ${palette.color_background};
   padding-top: 40px;
   padding-bottom: 50px;
+  z-index: 1;
 `;
 
 const NameWrapper = styled.div``;
@@ -913,8 +935,6 @@ const BarContainer = styled.div`
   height: 240px;
   background-color: ${palette.color_background};
   border-radius: 10px;
-  border: 1px solid ${palette.color_mainText};
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   padding: 23px 23px 23px 23px;
 `;
 
