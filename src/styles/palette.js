@@ -7,4 +7,6 @@ export const palette = {
   color_barInside: "#0000004d",
   color_background: "#F5F7F9",
   color_white: "#FFFFFF",
+  color_plus: "#FF3B30",
+  color_minus: "#3182F6",
 };
