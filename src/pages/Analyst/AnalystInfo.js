@@ -6,7 +6,7 @@ import { palette } from "@styles/palette";
 import { Text } from "@components/atoms/Text";
 import Bar from "@components/molecules/Bar";
 import SearchInput from "@components/molecules/SearchInput";
-import Filter from "@components/molecules/Filter";
+import Filter from "@pages/Analyst/components/Filter";
 import HoverDescription from "@components/organisms/HoverDescription";
 
 const ContentBox = () => {
