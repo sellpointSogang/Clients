@@ -7,7 +7,7 @@ import Header from "@components/organisms/Header";
 import { palette } from "@styles/palette";
 import { Text } from "@components/atoms/Text";
 import SearchInput from "@components/molecules/SearchInput";
-import Filter from "@components/molecules/Filter";
+import Filter from "../Stock/components/Filter";
 import HoverDescription from "@components/organisms/HoverDescription";
 import Bar from "@components/molecules/Bar";
 
@@ -296,6 +296,11 @@ const StockInfo = () => {
                 >
                   Sell Point
                 </Text>
+                <HoverDescription
+                  description={
+                    "전문가들이 주장하는 해당 종목의 매도 여부와 그에 대한 논리적 근거를 제공합니다."
+                  }
+                />
               </SellBtn>
               <ConsiderBtn tabs={tabs} onClick={() => setTabs("consider")}>
                 <Text
@@ -310,6 +315,11 @@ const StockInfo = () => {
                 >
                   우려 포인트
                 </Text>
+                <HoverDescription
+                  description={
+                    "전문가들이 강조하는 해당 종목의 투자 위험성과 그에 대한 논리적 근거를 제공합니다."
+                  }
+                />
               </ConsiderBtn>
             </Flex>
           </Flex>
@@ -366,9 +376,14 @@ const StockInfo = () => {
                     />
                   </Flex>
                   <Flex width="150px" direction="row" justify="flex-start">
-                    <Text size={16} color={palette.color_subText} weight={800}>
+                    <Text size={15} color={palette.color_subText} weight={800}>
                       애널리스트 히스토리
                     </Text>
+                    <HoverDescription
+                      description={
+                        "평균 적중률\n애널리스트가 작성한 리포트 예측들이 얼마나 정확했는지를 나타내는 지표입니다. 이는 과거 리포트들의 예측과 실제 시장의 움직임을 비교하여 산출됩니다.\n\n평균 첫 예측 적중 기간\n애널리스트의 리포트 예측이 실제 시장에서 처음으로 맞을 때까지의 소요 시간의 평균을 나타냅니다.\n\n평균 첫 예측 실패 기간\n애널리스트의 리포트 예측이 실제 시장에서 처음으로 틀릴 때까지의 소요 시간의 평균을 나타냅니다."
+                      }
+                    />
                   </Flex>
                 </Flex>
                 <ContentBox />
