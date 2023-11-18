@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import Header from "@components/organisms/Header/index";
 import Flex from "@components/atoms/Flex";
@@ -9,166 +9,48 @@ import SearchInput from "@components/molecules/SearchInput";
 import Filter from "@pages/Analyst/components/Filter";
 import HoverDescription from "@components/organisms/HoverDescription";
 
-const ContentBox = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
-
-  const listItems = [
-    `반도체 부문 불확실성: 반도체 시장의 변동성과 공급망
-    문제로 인해 삼성의 반도체 부문이 불안정한 상황에
-    직면하고 있습니다.`,
-    `반도체 부문 불확실성: 반도체 시장의 변동성과 공급망
-    문제로 인해 삼성의 반도체 부문이 불안정한 상황에
-    직면하고 있습니다.`,
-    `반도체 부문 불확실성: 반도체 시장의 변동성과 공급망
-    문제로 인해 삼성의 반도체 부문이 불안정한 상황에
-    직면하고 있습니다.`,
-    `반도체 부문 불확실성: 반도체 시장의 변동성과 공급망
-    문제로 인해 삼성의 반도체 부문이 불안정한 상황에
-    직면하고 있습니다.`,
-    `반도체 부문 불확실성: 반도체 시장의 변동성과 공급망
-    문제로 인해 삼성의 반도체 부문이 불안정한 상황에
-    직면하고 있습니다.`,
-  ];
-
-  return (
-    <ContentsBox>
-      <Flex direction="row" gap={20}>
-        <Flex width="500px" direction="column" align="flex-start">
-          <Text
-            color={palette.color_mainText}
-            weight={700}
-            size={16}
-            lineHeight="25px"
-          >
-            수익성 하락과 경쟁 압력에 직면하는 삼성전자
-          </Text>
-          <ul>
-            {listItems
-              .slice(0, isExpanded ? listItems.length : 3)
-              .map((itemContent, index) => (
-                <li
-                  key={index}
-                  style={{
-                    listStyle: "inside",
-                    overflowWrap: "break-word",
-                    textAlign: "left",
-                  }}
-                >
-                  <Text
-                    color={palette.color_mainText}
-                    weight={500}
-                    size={16}
-                    lineHeight="25px"
-                  >
-                    {itemContent}
-                  </Text>
-                </li>
-              ))}
-          </ul>
-          <Text
-            cursor="pointer"
-            weight={800}
-            size={16}
-            color={palette.color_barFill}
-            onClick={toggleExpand}
-          >
-            {isExpanded ? `접기` : `...더보기`}
-          </Text>
-        </Flex>
-        <Flex width="86.25px" direction="row">
-          <Text size={16} color={palette.color_mainText} weight={500}>
-            81,000{" "}
-          </Text>
-        </Flex>
-        <Flex width="86.25px" direction="row">
-          <Text size={16} color={palette.color_mainText} weight={500}>
-            2023.9.10.{" "}
-          </Text>
-        </Flex>
-        <Flex width="86.25px" direction="row">
-          <Flex>
-            <Text size={12} color={palette.color_subText} weight={600}>
-              005930
-            </Text>
-            <Text
-              size={16}
-              color={palette.color_mainText}
-              weight={500}
-              cursor="pointer"
-              textDecoration="underline"
-            >
-              삼성전자
-            </Text>
-          </Flex>
-        </Flex>
-        <Flex width="86.25px" direction="row">
-          <Text size={16} color={palette.color_mainText} weight={500}>
-            Sell
-          </Text>
-        </Flex>
-        <Flex width="185px" gap={15}>
-          <Flex align="start" gap={5}>
-            <Text size={14} color={palette.color_mainText}>
-              리포트 적중률
-            </Text>
-            <Bar
-              height="26.5px"
-              percentage="61%"
-              width="185px"
-              progressHeight="18px"
-              progressWidth="28px"
-              progressLeft="5px"
-              progressTop="3.97px"
-            >
-              61%
-            </Bar>
-          </Flex>
-          <Flex align="start" gap={5}>
-            <Text size={14} color={palette.color_mainText}>
-              첫 예측 적중 소요 기간{" "}
-            </Text>
-            <Bar
-              height="26.5px"
-              percentage="61%"
-              width="185px"
-              progressHeight="18px"
-              progressWidth="28px"
-              progressLeft="5px"
-              progressTop="3.97px"
-            >
-              61일
-            </Bar>
-          </Flex>
-          <Flex align="start" gap={5}>
-            <Text size={14} color={palette.color_mainText}>
-              첫 예측 실패 소요 기간{" "}
-            </Text>
-            <Bar
-              height="26.5px"
-              percentage="61%"
-              width="185px"
-              progressHeight="18px"
-              progressWidth="28px"
-              progressLeft="5px"
-              progressTop="3.97px"
-            >
-              61일
-            </Bar>
-          </Flex>
-        </Flex>
-      </Flex>
-    </ContentsBox>
-  );
-};
+import PointData from "../../utils/SellPointData";
+import { Content } from "antd/es/layout/layout";
+import ContentBox from "@components/organisms/ContentBox";
 
 const AnalystInfo = () => {
+  const CHUNK_SIZE = 4;
+
+  const [Points, setPoints] = useState([]);
+  const [dataIndex, setDataIndex] = useState(0);
+  const ref = useRef(null);
+
+  const loadMoreData = () => {
+    const chunk = PointData.slice(dataIndex, dataIndex + CHUNK_SIZE);
+    setPoints((prevData) => [...prevData, ...chunk]);
+    setDataIndex((prevIndex) => prevIndex + CHUNK_SIZE);
+  };
+
+  useEffect(() => {
+    loadMoreData();
+  }, []);
+
+  useEffect(() => {
+    const options = { root: null, threshold: 0 };
+    const handleIntersection = (entries, observer) => {
+      entries.forEach((entry) => {
+        console.log(entries[0].intersecting);
+        if (!entry.intersecting) {
+          return;
+        } else {
+          loadMoreData();
+        }
+      });
+    };
+    const io = new IntersectionObserver(handleIntersection, options);
+    if (ref.current) {
+      io.observe(ref.current);
+    }
+    return () => io && io.disconnect;
+  }, [ref]);
+
   return (
     <PageWrapper>
-      {" "}
       <Flex>
         <Header />
         <FirstWrapper>
@@ -291,44 +173,105 @@ const AnalystInfo = () => {
             </Flex>
             <ContentsContainer>
               <Flex>
-                <Flex gap={20} direction="row" height="40px">
-                  <Flex width="500px" direction="row" justify="flex-start">
-                    <Text size={16} color={palette.color_subText} weight={800}>
-                      Point 요약
-                    </Text>
+                <Wrapper>
+                  <Flex gap={20} direction="row" height="40px">
+                    <Flex width="500px" direction="row" justify="flex-start">
+                      <Text
+                        size={16}
+                        color={palette.color_subText}
+                        weight={800}
+                      >
+                        Point 요약
+                      </Text>
+                    </Flex>
+                    <Flex width="86.25px" direction="row">
+                      <Text
+                        size={16}
+                        color={palette.color_subText}
+                        weight={800}
+                      >
+                        타겟 주가
+                      </Text>
+                    </Flex>
+                    <Flex width="86.25px" direction="row">
+                      <Text
+                        size={16}
+                        color={palette.color_subText}
+                        weight={800}
+                      >
+                        날짜
+                      </Text>
+                    </Flex>
+                    <Flex width="86.25px" direction="row">
+                      <Text
+                        size={16}
+                        color={palette.color_subText}
+                        weight={800}
+                      >
+                        종목
+                      </Text>
+                    </Flex>
+                    <Flex width="86.25px" direction="row">
+                      <Text
+                        size={16}
+                        color={palette.color_subText}
+                        weight={800}
+                      >
+                        리포트 종류
+                      </Text>
+                    </Flex>
+                    <Flex width="185px" direction="row" justify="flex-start">
+                      <Text
+                        size={16}
+                        color={palette.color_subText}
+                        weight={800}
+                      >
+                        리포트 평가 수치
+                      </Text>
+                      <HoverDescription
+                        description={
+                          "리포트 적중률\n특정 리포트의 예측이 얼마나 정확했는지를 나타내는 지표입니다. 이는 특정 리포트의 예측과 실제 시장의 움직임을 비교하여 산출됩니다.\n\n첫 예측 적중 기간\n특정 리포트 예측이 실제 시장에서 처음으로 맞을 때까지의 소요 시간을 나타냅니다.\n\n첫 예측 실패 기간\n특정 리포트 예측이 실제 시장에서 처음으로 틀릴 때까지의 소요 시간을 나타냅니다."
+                        }
+                      />
+                    </Flex>
                   </Flex>
-                  <Flex width="86.25px" direction="row">
-                    <Text size={16} color={palette.color_subText} weight={800}>
-                      타겟 주가
-                    </Text>
-                  </Flex>
-                  <Flex width="86.25px" direction="row">
-                    <Text size={16} color={palette.color_subText} weight={800}>
-                      날짜
-                    </Text>
-                  </Flex>
-                  <Flex width="86.25px" direction="row">
-                    <Text size={16} color={palette.color_subText} weight={800}>
-                      종목
-                    </Text>
-                  </Flex>
-                  <Flex width="86.25px" direction="row">
-                    <Text size={16} color={palette.color_subText} weight={800}>
-                      리포트 종류
-                    </Text>
-                  </Flex>
-                  <Flex width="185px" direction="row" justify="flex-start">
-                    <Text size={16} color={palette.color_subText} weight={800}>
-                      리포트 평가 수치
-                    </Text>
-                    <HoverDescription
-                      description={
-                        "리포트 적중률\n특정 리포트의 예측이 얼마나 정확했는지를 나타내는 지표입니다. 이는 특정 리포트의 예측과 실제 시장의 움직임을 비교하여 산출됩니다.\n\n첫 예측 적중 기간\n특정 리포트 예측이 실제 시장에서 처음으로 맞을 때까지의 소요 시간을 나타냅니다.\n\n첫 예측 실패 기간\n특정 리포트 예측이 실제 시장에서 처음으로 틀릴 때까지의 소요 시간을 나타냅니다."
-                      }
-                    />
-                  </Flex>
-                </Flex>
-                <ContentBox />
+                </Wrapper>
+                <List>
+                  {Points.map((el, idx) => {
+                    if ((idx + CHUNK_SIZE) % CHUNK_SIZE === 3) {
+                      return (
+                        <ContentBox
+                          title={el.title}
+                          listItems={el.listItems}
+                          price={el.price}
+                          date={el.date}
+                          code={el.code}
+                          stockname={el.stockname}
+                          reportTye={el.reportType}
+                          one={el.one}
+                          two={el.two}
+                          three={el.three}
+                        />
+                      );
+                    } else {
+                      return (
+                        <ContentBox
+                          title={el.title}
+                          listItems={el.listItems}
+                          price={el.price}
+                          date={el.date}
+                          code={el.code}
+                          stockname={el.stockname}
+                          reportTye={el.reportType}
+                          one={el.one}
+                          two={el.two}
+                          three={el.three}
+                        />
+                      );
+                    }
+                  })}
+                  <VisuallyHidden ref={ref} />
+                </List>
               </Flex>
             </ContentsContainer>
           </Flex>
@@ -384,4 +327,19 @@ export const ContentsBox = styled.div`
 const PageWrapper = styled.div`
   min-width: 1400px;
   overflow-x: auto;
+`;
+
+const Wrapper = styled.div`
+  border-bottom: 1px solid #d5d8dc;
+`;
+
+const List = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const VisuallyHidden = styled.div`
+  width: 1px;
+  height: 1px;
+  display: hidden;
 `;
