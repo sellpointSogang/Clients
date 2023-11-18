@@ -13,7 +13,7 @@ import Bar from "@components/molecules/Bar";
 
 import Chart from "@components/organisms/Chart";
 import DropdownSelector from "@components/organisms/ChartMenu";
-import dataSet from "@/utils/data";
+import dataSet from "@/utils/ChartData";
 
 const useStyles = createUseStyles(() => ({
   container: {
