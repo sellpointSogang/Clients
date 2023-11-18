@@ -373,7 +373,7 @@ const ContentsContainer = styled.div`
   background-color: ${palette.color_white};
 `;
 
-const ContentsBox = styled.div`
+export const ContentsBox = styled.div`
   width: 100%;
   height: auto;
   padding-top: 20px;
