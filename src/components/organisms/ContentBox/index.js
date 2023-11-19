@@ -41,27 +41,33 @@ const ContentBox = ({
             {title}
           </Text>
           <ul>
-            {listItems
-              .slice(0, isExpanded ? listItems.length : 3)
-              .map((itemContent, index) => (
-                <li
-                  key={index}
-                  style={{
-                    listStyle: "inside",
-                    overflowWrap: "break-word",
-                    textAlign: "left",
-                  }}
-                >
-                  <Text
-                    color={palette.color_mainText}
-                    weight={500}
-                    size={16}
-                    lineHeight="25px"
-                  >
-                    {itemContent}
-                  </Text>
-                </li>
-              ))}
+            {listItems ? (
+              <>
+                {listItems
+                  .slice(0, isExpanded ? listItems.length : 3)
+                  .map((itemContent, index) => (
+                    <li
+                      key={index}
+                      style={{
+                        listStyle: "inside",
+                        overflowWrap: "break-word",
+                        textAlign: "left",
+                      }}
+                    >
+                      <Text
+                        color={palette.color_mainText}
+                        weight={500}
+                        size={16}
+                        lineHeight="25px"
+                      >
+                        {itemContent}
+                      </Text>
+                    </li>
+                  ))}
+              </>
+            ) : (
+              <></>
+            )}
           </ul>
           <Text
             cursor="pointer"

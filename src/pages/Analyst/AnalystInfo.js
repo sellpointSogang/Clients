@@ -12,33 +12,67 @@ import HoverDescription from "@components/organisms/HoverDescription";
 import PointData from "../../utils/SellPointData";
 import { Content } from "antd/es/layout/layout";
 import ContentBox from "@components/organisms/ContentBox";
+import axios from "axios";
 
 const AnalystInfo = () => {
-  const CHUNK_SIZE = 4;
-
+  const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
+  const [pageIndex, setPageIndex] = useState(1);
   const [Points, setPoints] = useState([]);
-  const [dataIndex, setDataIndex] = useState(0);
-  const ref = useRef(null);
+  const [profile, setProfile] = useState({
+    avg_days_hit: 0,
+    avg_days_missed: 0,
+    avg_days_to_first_hit: 0,
+    avg_days_to_first_miss: 0,
+    company: "",
+    hit_rate: 0,
+    id: -1,
+    name: "",
+  });
+  const [nextPage, setNextPage] = useState("");
 
-  const loadMoreData = () => {
-    const chunk = PointData.slice(dataIndex, dataIndex + CHUNK_SIZE);
-    setPoints((prevData) => [...prevData, ...chunk]);
-    setDataIndex((prevIndex) => prevIndex + CHUNK_SIZE);
+  /* axis를 통해 정보를 성공적으로 받아오면, Points에 추가적으로 저장하게 됨. */
+  const getData = () => {
+    axios
+      .get(`${API_URL}/analysts/1/reports/?page=${pageIndex}&page_size=4`)
+      .then((response) => {
+        setPoints((prevData) => [...prevData, ...response.data.results]);
+        setNextPage(`${response.data.next}`);
+        console.log("done");
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   };
 
+  const getProfile = () => {
+    axios
+      .get(`${API_URL}/analysts/analyst/1`)
+      .then((response) => {
+        console.log(response.data);
+        setProfile(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data", error);
+      });
+  };
+
+  /* 이름, 회사명 등 상단에 띄울 내용 렌더링 */
   useEffect(() => {
-    loadMoreData();
+    getProfile();
   }, []);
 
+  /* 무한 스크롤 부분, 페이지가 교차될 때 pageIndex를 1씩 높여주도록 함 */
+  const ref = useRef(null);
   useEffect(() => {
     const options = { root: null, threshold: 0 };
     const handleIntersection = (entries, observer) => {
       entries.forEach((entry) => {
-        console.log(entries[0].intersecting);
-        if (!entry.intersecting) {
+        // console.log(entries[0].isIntersecting);
+        if (!entries[0].isIntersecting) {
           return;
-        } else {
-          loadMoreData();
+        } else if (nextPage !== null) {
+          console.log(nextPage);
+          setPageIndex((prev) => prev + 1);
         }
       });
     };
@@ -48,6 +82,12 @@ const AnalystInfo = () => {
     }
     return () => io && io.disconnect;
   }, [ref]);
+
+  /* pageIndex가 변할 때 getData()를 통해 정보를 받아오도록 함.*/
+  useEffect(() => {
+    console.log(pageIndex);
+    getData();
+  }, [pageIndex]);
 
   return (
     <PageWrapper>
@@ -65,10 +105,10 @@ const AnalystInfo = () => {
               <NameWrapper>
                 <Flex align="flex-start" gap={10}>
                   <Text weight={800} color={palette.color_mainText} size={36}>
-                    김선경
+                    {profile.name}
                   </Text>
                   <Text weight={600} color={palette.color_mainText} size={24}>
-                    미래투자증권
+                    {profile.company}
                   </Text>
                 </Flex>
               </NameWrapper>
@@ -88,14 +128,14 @@ const AnalystInfo = () => {
                       </Flex>
                       <Bar
                         height="26.5px"
-                        percentage="61%"
+                        percentage={`${profile.hit_rate * 100}%`}
                         width="354px"
                         progressHeight="18px"
                         progressWidth="28px"
                         progressLeft="5px"
                         progressTop="3.97px"
                       >
-                        61%
+                        {profile.hit_rate * 100}%
                       </Bar>
                     </Flex>
                     <Flex gap={11} align="start">
@@ -111,14 +151,14 @@ const AnalystInfo = () => {
                       </Flex>
                       <Bar
                         height="26.5px"
-                        percentage="61%"
+                        percentage={`${profile.avg_days_to_first_hit}%`}
                         width="354px"
                         progressHeight="18px"
                         progressWidth="28px"
                         progressLeft="5px"
                         progressTop="3.97px"
                       >
-                        61일
+                        {profile.avg_days_to_first_hit}일
                       </Bar>
                     </Flex>
                     <Flex gap={11} align="start">
@@ -134,14 +174,14 @@ const AnalystInfo = () => {
                       </Flex>
                       <Bar
                         height="26.5px"
-                        percentage="61%"
+                        percentage={`${profile.avg_days_to_first_miss}%`}
                         width="354px"
                         progressHeight="18px"
                         progressWidth="28px"
                         progressLeft="5px"
                         progressTop="3.97px"
                       >
-                        72일
+                        {profile.avg_days_to_first_miss}일
                       </Bar>
                     </Flex>
                   </Flex>
@@ -238,37 +278,20 @@ const AnalystInfo = () => {
                 </Wrapper>
                 <List>
                   {Points.map((el, idx) => {
-                    if ((idx + CHUNK_SIZE) % CHUNK_SIZE === 3) {
-                      return (
-                        <ContentBox
-                          title={el.title}
-                          listItems={el.listItems}
-                          price={el.price}
-                          date={el.date}
-                          code={el.code}
-                          stockname={el.stockname}
-                          reportTye={el.reportType}
-                          one={el.one}
-                          two={el.two}
-                          three={el.three}
-                        />
-                      );
-                    } else {
-                      return (
-                        <ContentBox
-                          title={el.title}
-                          listItems={el.listItems}
-                          price={el.price}
-                          date={el.date}
-                          code={el.code}
-                          stockname={el.stockname}
-                          reportTye={el.reportType}
-                          one={el.one}
-                          two={el.two}
-                          three={el.three}
-                        />
-                      );
-                    }
+                    return (
+                      <ContentBox
+                        title={el.title}
+                        listItems={el.points}
+                        price={el.target_price}
+                        date={el.publish_date}
+                        code={el.code}
+                        stockname={el.stock.name}
+                        reportTye={el.hidden_sentiment}
+                        one={el.hit_rate * 100}
+                        two={el.days_to_first_hit}
+                        three={el.days_to_first_miss}
+                      />
+                    );
                   })}
                   <VisuallyHidden ref={ref} />
                 </List>
