@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Header from "@components/organisms/Header/index";
 import Flex from "@components/atoms/Flex";
@@ -9,8 +9,10 @@ import SearchInput from "@components/molecules/SearchInput";
 import Filter from "@pages/Analyst/components/Filter";
 import HoverDescription from "@components/organisms/HoverDescription";
 import { Content } from "antd/es/layout/layout";
+import axios from "axios";
 
 const ContentBox = ({
+  id,
   title,
   listItems,
   price,
@@ -22,12 +24,30 @@ const ContentBox = ({
   two,
   three,
 }) => {
+  const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
   const [isExpanded, setIsExpanded] = useState(false);
-
+  const [pointList, setPointList] = useState([]);
+  useEffect(() => {
+    setPointList([...listItems]);
+  }, []);
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
-
+  const getFullPoints = (id) => {
+    axios
+      .get(`${API_URL}reports/${id}/points`)
+      .then((response) => {
+        console.log(response.data);
+        setPointList([...response.data]);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  useEffect(() => {
+    setPointList([]);
+    getFullPoints(id);
+  }, [isExpanded]);
   return (
     <ContentsBox>
       <Flex direction="row" gap={20}>
@@ -41,10 +61,10 @@ const ContentBox = ({
             {title}
           </Text>
           <ul>
-            {listItems ? (
+            {pointList ? (
               <>
-                {listItems
-                  .slice(0, isExpanded ? listItems.length : 3)
+                {pointList
+                  .slice(0, isExpanded ? pointList.length : 3)
                   .map((itemContent, index) => (
                     <li
                       key={index}

@@ -10,9 +10,15 @@ import {
 import Flex from "@components/atoms/Flex";
 import { palette } from "@styles/palette";
 import styled from "styled-components";
-import SortingPopup from "@components/organisms/SortingPopup";
-
-const Filter = ({ width, height, insideWidth, insideHeight }) => {
+import AnSortingPopup from "@components/organisms/AnSortingPopup";
+const Filter = ({
+  width,
+  height,
+  insideWidth,
+  insideHeight,
+  OrderMode,
+  SetOrder,
+}) => {
   const filterRef = useRef(null);
 
   useEffect(() => {
@@ -135,7 +141,7 @@ const Filter = ({ width, height, insideWidth, insideHeight }) => {
             />
 
             <Flex direction="row" justify="flex-end">
-              <SortingPopup />
+              <AnSortingPopup OrderMode={OrderMode} SetOrder={SetOrder} />
             </Flex>
           </Flex>
         </InsideContainer>

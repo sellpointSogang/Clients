@@ -5,7 +5,8 @@ import { faSort } from "@fortawesome/free-solid-svg-icons";
 import { Text } from "@components/atoms/Text";
 import Flex from "@components/atoms/Flex";
 
-const AnSortingPopup = () => {
+const AnSortingPopup = ({ OrderMode, SetOrder }) => {
+  console.log(OrderMode);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("날짜");
   const [sortOrders, setSortOrders] = useState({
@@ -62,6 +63,29 @@ const AnSortingPopup = () => {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    if (
+      selectedCategory == "날짜" &&
+      sortOrders[selectedCategory] == "최신 순"
+    ) {
+      SetOrder("Date");
+    } else if (
+      selectedCategory == "날짜" &&
+      sortOrders[selectedCategory] == "오래된 순"
+    ) {
+      SetOrder("ReverseDate");
+    } else if (
+      selectedCategory == "리포트 적중률" &&
+      sortOrders[selectedCategory] == "높은 순"
+    ) {
+      SetOrder("Hitrate");
+    } else if (
+      selectedCategory == "리포트 적중률" &&
+      sortOrders[selectedCategory] == "낮은 순"
+    ) {
+      SetOrder("ReverseHitrate");
+    }
+  }, [selectedCategory, sortOrders]);
   return (
     <Container>
       <PopupTrigger onClick={togglePopup}>

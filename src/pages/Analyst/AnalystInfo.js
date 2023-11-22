@@ -8,6 +8,7 @@ import Bar from "@components/molecules/Bar";
 import SearchInput from "@components/molecules/SearchInput";
 import Filter from "@pages/Analyst/components/Filter";
 import HoverDescription from "@components/organisms/HoverDescription";
+import AnSortingPopup from "@components/organisms/AnSortingPopup";
 
 import PointData from "../../utils/SellPointData";
 import { Content } from "antd/es/layout/layout";
@@ -17,6 +18,8 @@ import axios from "axios";
 const AnalystInfo = () => {
   const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
   const [pageIndex, setPageIndex] = useState(1);
+  /* 아래 state와 setState를 Filter에 prop으로 전달하여  */
+  const [orderMode, setOrderMode] = useState("Date");
   const [Points, setPoints] = useState([]);
   const [profile, setProfile] = useState({
     avg_days_hit: 0,
@@ -31,22 +34,72 @@ const AnalystInfo = () => {
   const [nextPage, setNextPage] = useState("");
 
   /* axis를 통해 정보를 성공적으로 받아오면, Points에 추가적으로 저장하게 됨. */
-  const getData = () => {
+  /* 날짜 정렬 버전 받아오는 함수 */
+  const getDateOrderedData = () => {
     axios
-      .get(`${API_URL}/analysts/1/reports/?page=${pageIndex}&page_size=4`)
+      .get(
+        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=-publish_date`
+      )
+      .then((response) => {
+        console.log(response.data);
+        setPoints((prevData) => [...prevData, ...response.data.results]);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  /* 날짜 역순 데이터 받아오는 함수*/
+  const getReverseDateOrderedData = () => {
+    axios
+      .get(
+        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=publish_date`
+      )
       .then((response) => {
         setPoints((prevData) => [...prevData, ...response.data.results]);
-        setNextPage(`${response.data.next}`);
-        console.log("done");
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  /* 적중률 순 데이터 받아오는 함수 */
+  const getHitrateOrderedData = () => {
+    axios
+      .get(
+        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=-hit_rate`
+      )
+      .then((response) => {
+        setPoints((prevData) => [...prevData, ...response.data.results]);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }; /* 적중률 역순 데이터 받아오는 함수 */
+  const getReverseHitrateOrderedData = () => {
+    axios
+      .get(
+        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=hit_rate`
+      )
+      .then((response) => {
+        setPoints((prevData) => [...prevData, ...response.data.results]);
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
   };
 
+  const Search = () => {
+    axios
+      .get(`${API_URL}search/?query=hey`)
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log("error", error);
+      });
+  };
   const getProfile = () => {
     axios
-      .get(`${API_URL}/analysts/analyst/1`)
+      .get(`${API_URL}analysts/analyst/1`)
       .then((response) => {
         console.log(response.data);
         setProfile(response.data);
@@ -64,7 +117,7 @@ const AnalystInfo = () => {
   /* 무한 스크롤 부분, 페이지가 교차될 때 pageIndex를 1씩 높여주도록 함 */
   const ref = useRef(null);
   useEffect(() => {
-    const options = { root: null, threshold: 0 };
+    const options = { root: null, threshold: 0.5 };
     const handleIntersection = (entries, observer) => {
       entries.forEach((entry) => {
         // console.log(entries[0].isIntersecting);
@@ -86,8 +139,30 @@ const AnalystInfo = () => {
   /* pageIndex가 변할 때 getData()를 통해 정보를 받아오도록 함.*/
   useEffect(() => {
     console.log(pageIndex);
-    getData();
+    if (orderMode == "Date") {
+      getDateOrderedData();
+    } else if (orderMode == "ReverseDate") {
+      getReverseDateOrderedData();
+    } else if (orderMode == "Hitrate") {
+      getHitrateOrderedData();
+    } else if (orderMode == "ReverseHitrate") {
+      getReverseHitrateOrderedData();
+    }
   }, [pageIndex]);
+
+  useEffect(() => {
+    setPoints([]);
+    setPageIndex(1);
+    // if (orderMode == "Date") {
+    //   getDateOrderedData();
+    // } else if (orderMode == "ReverseDate") {
+    //   getReverseDateOrderedData();
+    // } else if (orderMode == "Hitrate") {
+    //   getHitrateOrderedData();
+    // } else if (orderMode == "ReverseHitrate") {
+    //   getReverseHitrateOrderedData();
+    // }
+  }, [orderMode]);
 
   return (
     <PageWrapper>
@@ -206,9 +281,8 @@ const AnalystInfo = () => {
                 height="50px"
                 insideWidth="670px"
                 insideHeight="29px"
-                First="날짜"
-                Second="리포트 적중률"
-                Third="리포트 종류"
+                OrderMode={orderMode}
+                SetOrder={setOrderMode}
               />
             </Flex>
             <ContentsContainer>
@@ -280,6 +354,7 @@ const AnalystInfo = () => {
                   {Points.map((el, idx) => {
                     return (
                       <ContentBox
+                        id={el.id}
                         title={el.title}
                         listItems={el.points}
                         price={el.target_price}
