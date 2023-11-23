@@ -6,7 +6,7 @@ import { Text } from "@components/atoms/Text";
 import Flex from "@components/atoms/Flex";
 
 const AnSortingPopup = ({ OrderMode, SetOrder }) => {
-  console.log(OrderMode);
+  // console.log(OrderMode);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("날짜");
   const [sortOrders, setSortOrders] = useState({
@@ -63,6 +63,7 @@ const AnSortingPopup = ({ OrderMode, SetOrder }) => {
     };
   }, [isOpen]);
 
+  /* 날짜/순서가 변경될 때 prop으로 받은 SetOrder를 호출하여 해당 값을 AnalystInfo.js로 전달 */
   useEffect(() => {
     if (
       selectedCategory == "날짜" &&

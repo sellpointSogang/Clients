@@ -5,9 +5,16 @@ import styled from "styled-components";
 import Flex from "@components/atoms/Flex";
 import { palette } from "@styles/palette";
 
-const SearchInput = ({ width, placeholder, height }) => {
+const SearchInput = ({
+  width,
+  placeholder,
+  height,
+  searchText,
+  setSearchText,
+  isEnter,
+  setIsEnter,
+}) => {
   const [searchFocused, setSearchFocused] = useState(false);
-  const [searchText, setSearchText] = useState("");
   const searchBoxRef = useRef(null);
 
   // Function to handle outside click
@@ -35,6 +42,15 @@ const SearchInput = ({ width, placeholder, height }) => {
     setSearchText(e.target.value);
   };
 
+  const handleKeyPress = (e) => {
+    let key = e.key || e.keycode;
+    console.log(key);
+    if (key === "Enter") {
+      setIsEnter(true);
+      console.log(isEnter);
+    }
+  };
+
   return (
     <SearchContainer focused={searchFocused} width={width} height={height}>
       <SearchBox ref={searchBoxRef} focused={searchFocused}>
@@ -52,6 +68,7 @@ const SearchInput = ({ width, placeholder, height }) => {
             onClick={handleSearchInputClick}
             value={searchText}
             onChange={handleInputChange}
+            onKeyDown={handleKeyPress}
             placeholder={placeholder}
           />
         </div>

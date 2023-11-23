@@ -20,6 +20,10 @@ const AnalystInfo = () => {
   const [pageIndex, setPageIndex] = useState(1);
   /* 아래 state와 setState를 Filter에 prop으로 전달하여  */
   const [orderMode, setOrderMode] = useState("Date");
+  /* 아래 searchText와 setSearchText를 SearchInput에 prop으로 전달 */
+  const [searchText, setSearchText] = useState("");
+  /* 검색 기능을 위해 엔터 키인지 판별, searchInput에 prop으로 전달 */
+  const [isEnter, setIsEnter] = useState(false);
   const [Points, setPoints] = useState([]);
   const [profile, setProfile] = useState({
     avg_days_hit: 0,
@@ -38,7 +42,7 @@ const AnalystInfo = () => {
   const getDateOrderedData = () => {
     axios
       .get(
-        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=-publish_date`
+        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=-publish_date&query=${searchText}`
       )
       .then((response) => {
         console.log(response.data);
@@ -52,7 +56,7 @@ const AnalystInfo = () => {
   const getReverseDateOrderedData = () => {
     axios
       .get(
-        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=publish_date`
+        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=publish_date&query=${searchText}`
       )
       .then((response) => {
         setPoints((prevData) => [...prevData, ...response.data.results]);
@@ -65,7 +69,7 @@ const AnalystInfo = () => {
   const getHitrateOrderedData = () => {
     axios
       .get(
-        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=-hit_rate`
+        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=-hit_rate&query=${searchText}`
       )
       .then((response) => {
         setPoints((prevData) => [...prevData, ...response.data.results]);
@@ -77,7 +81,7 @@ const AnalystInfo = () => {
   const getReverseHitrateOrderedData = () => {
     axios
       .get(
-        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=hit_rate`
+        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=hit_rate&query=${searchText}`
       )
       .then((response) => {
         setPoints((prevData) => [...prevData, ...response.data.results]);
@@ -86,17 +90,7 @@ const AnalystInfo = () => {
         console.error("Error fetching data:", error);
       });
   };
-
-  const Search = () => {
-    axios
-      .get(`${API_URL}search/?query=hey`)
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.log("error", error);
-      });
-  };
+  /* 상단에 표기할 프로필을 받아와 줌 */
   const getProfile = () => {
     axios
       .get(`${API_URL}analysts/analyst/1`)
@@ -136,7 +130,7 @@ const AnalystInfo = () => {
     return () => io && io.disconnect;
   }, [ref]);
 
-  /* pageIndex가 변할 때 getData()를 통해 정보를 받아오도록 함.*/
+  /* pageIndex가 변할 때 정보를 받아오도록 함.*/
   useEffect(() => {
     console.log(pageIndex);
     if (orderMode == "Date") {
@@ -149,7 +143,7 @@ const AnalystInfo = () => {
       getReverseHitrateOrderedData();
     }
   }, [pageIndex]);
-
+  /* order가 바뀔 때 Points를 비워주고 pageIndex를 초기화해주기 위함 */
   useEffect(() => {
     setPoints([]);
     setPageIndex(1);
@@ -163,6 +157,15 @@ const AnalystInfo = () => {
     //   getReverseHitrateOrderedData();
     // }
   }, [orderMode]);
+
+  /* isEnter가 바뀔 때를 검색으로 가정하고 Points를 비워줌 */
+  useEffect(() => {
+    if (isEnter == true) {
+      setPoints([]);
+      setIsEnter(false);
+      setPageIndex(1);
+    }
+  }, [isEnter]);
 
   return (
     <PageWrapper>
@@ -275,6 +278,10 @@ const AnalystInfo = () => {
                 width="348px"
                 height="50px"
                 placeholder="리포트 제목, 종목"
+                searchText={searchText}
+                setSearchText={setSearchText}
+                isEnter={isEnter}
+                setIsEnter={setIsEnter}
               />
               <Filter
                 width="700px"
