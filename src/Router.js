@@ -8,7 +8,7 @@ const Router = () => {
       <Routes>
         <Route path="/" element={<Search />} />
         <Route path="/stock:id" element={<StockInfo />} />
-        <Route path="/analyst" element={<AnalystInfo />} />
+        <Route path="/analyst/:id" element={<AnalystInfo />} />
         <Route />
       </Routes>
     </BrowserRouter>

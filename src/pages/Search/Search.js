@@ -4,9 +4,15 @@ import Flex from "../../components/atoms/Flex";
 import { styled } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import axios from "axios";
 import SearchResults from "./SearchResults";
 
 const Search = () => {
+  const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
+  /* 주식 리스트를 생성하기 위함 */
+  const [stockList, setStockList] = useState([]);
+  /* 애널리스트 리스트를 생성하기 위함 */
+  const [anList, setAnList] = useState([]);
   const [searchFocused, setSearchFocused] = useState(false);
   const [searchText, setSearchText] = useState("");
   const searchBoxRef = useRef(null);
@@ -17,6 +23,26 @@ const Search = () => {
       setSearchFocused(false);
     }
   };
+
+  /* search api와 통신하는 함수 */
+  const getData = () => {
+    axios
+      .get(`${API_URL}search/?query=${searchText}`)
+      .then((response) => {
+        console.log(response.data);
+        setStockList([...response.data.stocks]);
+        setAnList([...response.data.analysts]);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+
+  useEffect(() => {
+    setStockList([]);
+    setAnList([]);
+    getData();
+  }, [searchText]);
 
   // Add click event listener to the document
   useEffect(() => {
@@ -61,7 +87,7 @@ const Search = () => {
           </div>
           {searchFocused ? (
             <SearchResultsContainer>
-              <SearchResults />
+              <SearchResults stockList={stockList} anList={anList} />
             </SearchResultsContainer>
           ) : null}
         </SearchBox>

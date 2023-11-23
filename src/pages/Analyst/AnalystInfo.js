@@ -9,7 +9,7 @@ import SearchInput from "@components/molecules/SearchInput";
 import Filter from "@pages/Analyst/components/Filter";
 import HoverDescription from "@components/organisms/HoverDescription";
 import AnSortingPopup from "@components/organisms/AnSortingPopup";
-
+import { useParams } from "react-router-dom";
 import PointData from "../../utils/SellPointData";
 import { Content } from "antd/es/layout/layout";
 import ContentBox from "@components/organisms/ContentBox";
@@ -17,6 +17,9 @@ import axios from "axios";
 
 const AnalystInfo = () => {
   const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
+
+  let params = useParams();
+
   const [pageIndex, setPageIndex] = useState(1);
   /* 아래 state와 setState를 Filter에 prop으로 전달하여  */
   const [orderMode, setOrderMode] = useState("Date");
@@ -36,13 +39,12 @@ const AnalystInfo = () => {
     name: "",
   });
   const [nextPage, setNextPage] = useState("");
-
   /* axis를 통해 정보를 성공적으로 받아오면, Points에 추가적으로 저장하게 됨. */
   /* 날짜 정렬 버전 받아오는 함수 */
   const getDateOrderedData = () => {
     axios
       .get(
-        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=-publish_date&query=${searchText}`
+        `${API_URL}analysts/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=-publish_date&query=${searchText}`
       )
       .then((response) => {
         console.log(response.data);
@@ -56,7 +58,7 @@ const AnalystInfo = () => {
   const getReverseDateOrderedData = () => {
     axios
       .get(
-        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=publish_date&query=${searchText}`
+        `${API_URL}analysts/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=publish_date&query=${searchText}`
       )
       .then((response) => {
         setPoints((prevData) => [...prevData, ...response.data.results]);
@@ -69,7 +71,7 @@ const AnalystInfo = () => {
   const getHitrateOrderedData = () => {
     axios
       .get(
-        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=-hit_rate&query=${searchText}`
+        `${API_URL}analysts/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=-hit_rate&query=${searchText}`
       )
       .then((response) => {
         setPoints((prevData) => [...prevData, ...response.data.results]);
@@ -81,7 +83,7 @@ const AnalystInfo = () => {
   const getReverseHitrateOrderedData = () => {
     axios
       .get(
-        `${API_URL}analysts/1/reports?page=${pageIndex}&page_size=4&ordering=hit_rate&query=${searchText}`
+        `${API_URL}analysts/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=hit_rate&query=${searchText}`
       )
       .then((response) => {
         setPoints((prevData) => [...prevData, ...response.data.results]);
@@ -93,7 +95,7 @@ const AnalystInfo = () => {
   /* 상단에 표기할 프로필을 받아와 줌 */
   const getProfile = () => {
     axios
-      .get(`${API_URL}analysts/analyst/1`)
+      .get(`${API_URL}analysts/analyst/${params.id}`)
       .then((response) => {
         console.log(response.data);
         setProfile(response.data);

@@ -2,8 +2,11 @@ import React from "react";
 import { styled } from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChartLine, faUser } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 import Flex from "../../components/atoms/Flex";
-const SearchResults = () => {
+const SearchResults = ({ stockList, anList }) => {
+  const navigate = useNavigate();
+
   return (
     <SearchResultsDiv>
       <Title>
@@ -17,16 +20,14 @@ const SearchResults = () => {
         종목
       </Title>
       <Result>
-        <ResultContents>
-          <ResultLeft>삼성전자</ResultLeft>
-          <ResultRight>005930</ResultRight>
-        </ResultContents>
-      </Result>
-      <Result>
-        <ResultContents>
-          <ResultLeft>삼성전자</ResultLeft>
-          <ResultRight>005930</ResultRight>
-        </ResultContents>
+        {stockList.map((el, idx) => {
+          return (
+            <ResultContents>
+              <ResultLeft>{el.name}</ResultLeft>
+              <ResultRight>{el.code}</ResultRight>
+            </ResultContents>
+          );
+        })}
       </Result>
       <Title>
         <FontAwesomeIcon
@@ -39,22 +40,14 @@ const SearchResults = () => {
         애널리스트
       </Title>
       <Result>
-        <ResultContents>
-          <ResultLeft>김삼성</ResultLeft>
-          <ResultRight>미래투자증권</ResultRight>
-        </ResultContents>
-      </Result>
-      <Result>
-        <ResultContents>
-          <ResultLeft>김삼성</ResultLeft>
-          <ResultRight>미래투자증권</ResultRight>
-        </ResultContents>
-      </Result>
-      <Result>
-        <ResultContents>
-          <ResultLeft>김삼성</ResultLeft>
-          <ResultRight>미래투자증권</ResultRight>
-        </ResultContents>
+        {anList.map((el, idx) => {
+          return (
+            <ResultContents onClick={() => navigate(`/analyst/${el.id}`)}>
+              <ResultLeft>{el.name}</ResultLeft>
+              <ResultRight>{el.company}</ResultRight>
+            </ResultContents>
+          );
+        })}
       </Result>
     </SearchResultsDiv>
   );
@@ -101,7 +94,7 @@ const ResultContents = styled.div`
   align-items: center;
   padding: 12px 8px;
   border-radius: 5px;
-
+  cursor: pointer;
   &:hover {
     background-color: #f5f7f9;
   }
