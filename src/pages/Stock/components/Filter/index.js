@@ -12,7 +12,14 @@ import { palette } from "@styles/palette";
 import styled from "styled-components";
 import SortingPopup from "@components/organisms/SortingPopup";
 
-const Filter = ({ width, height, insideWidth, insideHeight }) => {
+const Filter = ({
+  width,
+  height,
+  insideWidth,
+  insideHeight,
+  OrderMode,
+  SetOrder,
+}) => {
   const filterRef = useRef(null);
 
   useEffect(() => {
@@ -135,7 +142,7 @@ const Filter = ({ width, height, insideWidth, insideHeight }) => {
             />
 
             <Flex direction="row" justify="flex-end">
-              <SortingPopup />
+              <SortingPopup OrderMode={OrderMode} SetOrder={SetOrder} />
             </Flex>
           </Flex>
         </InsideContainer>

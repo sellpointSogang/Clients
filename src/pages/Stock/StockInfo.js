@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import styled from "styled-components";
 
@@ -14,6 +14,8 @@ import Bar from "@components/molecules/Bar";
 import Chart from "@components/organisms/Chart";
 import DropdownSelector from "@components/organisms/ChartMenu";
 import dataSet from "@/utils/ChartData";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const useStyles = createUseStyles(() => ({
   container: {
@@ -28,30 +30,45 @@ const useStyles = createUseStyles(() => ({
   },
 }));
 
-const ContentBox = () => {
+const ContentBox = ({
+  id,
+  title,
+  listItems,
+  price,
+  date,
+  analystname,
+  one,
+  two,
+  three,
+  four,
+  five,
+  six,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
 
+  const [pointList, setPointList] = useState([]);
+  useEffect(() => {
+    setPointList([...listItems]);
+  }, []);
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
-
-  const listItems = [
-    `반도체 부문 불확실성: 반도체 시장의 변동성과 공급망
-    문제로 인해 삼성의 반도체 부문이 불안정한 상황에
-    직면하고 있습니다.`,
-    `반도체 부문 불확실성: 반도체 시장의 변동성과 공급망
-    문제로 인해 삼성의 반도체 부문이 불안정한 상황에
-    직면하고 있습니다.`,
-    `반도체 부문 불확실성: 반도체 시장의 변동성과 공급망
-    문제로 인해 삼성의 반도체 부문이 불안정한 상황에
-    직면하고 있습니다.`,
-    `반도체 부문 불확실성: 반도체 시장의 변동성과 공급망
-    문제로 인해 삼성의 반도체 부문이 불안정한 상황에
-    직면하고 있습니다.`,
-    `반도체 부문 불확실성: 반도체 시장의 변동성과 공급망
-    문제로 인해 삼성의 반도체 부문이 불안정한 상황에
-    직면하고 있습니다.`,
-  ];
+  const getFullPoints = (id) => {
+    axios
+      .get(`${API_URL}reports/${id}/points`)
+      .then((response) => {
+        console.log(response.data);
+        setPointList([...response.data]);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  useEffect(() => {
+    setPointList([]);
+    getFullPoints(id);
+  }, [isExpanded]);
 
   return (
     <ContentsBox>
@@ -63,11 +80,11 @@ const ContentBox = () => {
             size={16}
             lineHeight="25px"
           >
-            수익성 하락과 경쟁 압력에 직면하는 삼성전자
+            {title}
           </Text>
           <ul>
             {listItems
-              .slice(0, isExpanded ? listItems.length : 3)
+              .slice(0, isExpanded ? pointList.length : 3)
               .map((itemContent, index) => (
                 <li
                   key={index}
@@ -100,18 +117,18 @@ const ContentBox = () => {
         </Flex>
         <Flex width="70px" direction="row">
           <Text size={16} color={palette.color_mainText} weight={500}>
-            81,000{" "}
+            {price}
           </Text>
         </Flex>
         <Flex width="70px" direction="row">
           <Text size={16} color={palette.color_mainText} weight={500}>
-            2023.9.10.{" "}
+            {date}
           </Text>
         </Flex>
         <Flex width="92px" direction="row">
           <Flex>
             <Text size={12} color={palette.color_subText} weight={600}>
-              미래투자증권
+              {" "}
             </Text>
             <Text
               size={16}
@@ -120,7 +137,7 @@ const ContentBox = () => {
               cursor="pointer"
               textDecoration="underline"
             >
-              김선경
+              {analystname}
             </Text>
           </Flex>
         </Flex>
@@ -131,14 +148,14 @@ const ContentBox = () => {
             </Text>
             <Bar
               height="26.5px"
-              percentage="61%"
+              percentage={`${one}%`}
               width="150px"
               progressHeight="18px"
               progressWidth="28px"
               progressLeft="5px"
               progressTop="3.97px"
             >
-              61%
+              {`${one}%`}
             </Bar>
           </Flex>
           <Flex align="start" gap={5}>
@@ -147,14 +164,14 @@ const ContentBox = () => {
             </Text>
             <Bar
               height="26.5px"
-              percentage="61%"
+              percentage={`${two}%`}
               width="150px"
               progressHeight="18px"
               progressWidth="28px"
               progressLeft="5px"
               progressTop="3.97px"
             >
-              61일
+              {`${two}일`}
             </Bar>
           </Flex>
           <Flex align="start" gap={5}>
@@ -163,32 +180,32 @@ const ContentBox = () => {
             </Text>
             <Bar
               height="26.5px"
-              percentage="61%"
+              percentage={`${three}%`}
               width="150px"
               progressHeight="18px"
               progressWidth="28px"
               progressLeft="5px"
               progressTop="3.97px"
             >
-              61일
+              {`${three}일`}
             </Bar>
           </Flex>
         </Flex>
         <Flex width="150px" gap={15}>
           <Flex align="start" gap={5}>
             <Text size={13} color={palette.color_mainText}>
-              평균 적중률
+              평균 적중일
             </Text>
             <Bar
               height="26.5px"
-              percentage="61%"
+              percentage={`${four}%`}
               width="150px"
               progressHeight="18px"
               progressWidth="28px"
               progressLeft="5px"
               progressTop="3.97px"
             >
-              61%
+              {`${four}일`}
             </Bar>
           </Flex>
           <Flex align="start" gap={5}>
@@ -197,14 +214,14 @@ const ContentBox = () => {
             </Text>
             <Bar
               height="26.5px"
-              percentage="61%"
+              percentage={`${five}%`}
               width="150px"
               progressHeight="18px"
               progressWidth="28px"
               progressLeft="5px"
               progressTop="3.97px"
             >
-              61일
+              {`${five}일`}
             </Bar>
           </Flex>
           <Flex align="start" gap={5}>
@@ -213,14 +230,14 @@ const ContentBox = () => {
             </Text>
             <Bar
               height="26.5px"
-              percentage="61%"
+              percentage={`${six}%`}
               width="150px"
               progressHeight="18px"
               progressWidth="28px"
               progressLeft="5px"
               progressTop="3.97px"
             >
-              61일
+              {`${six}일`}
             </Bar>
           </Flex>
         </Flex>
@@ -230,6 +247,163 @@ const ContentBox = () => {
 };
 
 const StockInfo = () => {
+  const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
+
+  let params = useParams();
+
+  const [pageIndex, setPageIndex] = useState(1);
+  /* 아래 state와 setState를 Filter에 prop으로 전달하여  */
+  const [orderMode, setOrderMode] = useState("Date");
+  /* 아래 searchText와 setSearchText를 SearchInput에 prop으로 전달 */
+  const [searchText, setSearchText] = useState("");
+  /* 검색 기능을 위해 엔터 키인지 판별, searchInput에 prop으로 전달 */
+  const [isEnter, setIsEnter] = useState(false);
+  const [Points, setPoints] = useState([]);
+  const [nextPage, setNextPage] = useState("");
+
+  /* 날짜 정렬 버전 받아오는 함수 */
+  const getDateOrderedData = () => {
+    axios
+      .get(
+        `${API_URL}stocks/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=-publish_date&query=${searchText}`
+      )
+      .then((response) => {
+        console.log(response.data);
+        setPoints((prevData) => [...prevData, ...response.data.results]);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  /* 날짜 역순 데이터 받아오는 함수*/
+  const getReverseDateOrderedData = () => {
+    axios
+      .get(
+        `${API_URL}stocks/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=publish_date&query=${searchText}`
+      )
+      .then((response) => {
+        setPoints((prevData) => [...prevData, ...response.data.results]);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  /* 리포트 적중률 순 데이터 받아오는 함수 */
+  const getHitrateOrderedData = () => {
+    axios
+      .get(
+        `${API_URL}stocks/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=-hit_rate&query=${searchText}`
+      )
+      .then((response) => {
+        setPoints((prevData) => [...prevData, ...response.data.results]);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  /* 리포트 적중률 역순 데이터 받아오는 함수 */
+  const getReverseHitrateOrderedData = () => {
+    axios
+      .get(
+        `${API_URL}stocks/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=hit_rate&query=${searchText}`
+      )
+      .then((response) => {
+        setPoints((prevData) => [...prevData, ...response.data.results]);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  /* 평균 적중률 순 데이터 받아오는 함수 -> 수정 필요 */
+  const getAvgHitrateOrderedData = () => {
+    axios
+      .get(
+        `${API_URL}stocks/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=min_analyst_hit_rate&query=${searchText}`
+      )
+      .then((response) => {
+        setPoints((prevData) => [...prevData, ...response.data.results]);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  /* 평균 적중률 역순 데이터 받아오는 함수 -> 수정 필요 */
+  const getAvgReverseHitrateOrderedData = () => {
+    axios
+      .get(
+        `${API_URL}stocks/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=-min_analyst_hit_rate&query=${searchText}`
+      )
+      .then((response) => {
+        setPoints((prevData) => [...prevData, ...response.data.results]);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+
+  /* 무한 스크롤 부분, 페이지가 교차될 때 pageIndex를 1씩 높여주도록 함 */
+  const ref = useRef(null);
+  useEffect(() => {
+    const options = { root: null, threshold: 0.5 };
+    const handleIntersection = (entries, observer) => {
+      entries.forEach((entry) => {
+        // console.log(entries[0].isIntersecting);
+        if (!entries[0].isIntersecting) {
+          return;
+        } else if (nextPage !== null) {
+          console.log(nextPage);
+          setPageIndex((prev) => prev + 1);
+        }
+      });
+    };
+    const io = new IntersectionObserver(handleIntersection, options);
+    if (ref.current) {
+      io.observe(ref.current);
+    }
+    return () => io && io.disconnect;
+  }, [ref]);
+
+  /* pageIndex가 변할 때 정보를 받아오도록 함.*/
+  useEffect(() => {
+    console.log(pageIndex);
+    if (orderMode == "Date") {
+      getDateOrderedData();
+    } else if (orderMode == "ReverseDate") {
+      getReverseDateOrderedData();
+    } else if (orderMode == "Hitrate") {
+      getHitrateOrderedData();
+    } else if (orderMode == "ReverseHitrate") {
+      getReverseHitrateOrderedData();
+    } else if (orderMode == "AvgHitrate") {
+      getAvgHitrateOrderedData();
+    } else if (orderMode == "AvgReverseHitrate") {
+      getAvgReverseHitrateOrderedData();
+    }
+  }, [pageIndex]);
+  /* order가 바뀔 때 Points를 비워주고 pageIndex를 초기화해주기 위함 */
+  useEffect(() => {
+    setPoints([]);
+    setPageIndex(1);
+    // if (orderMode == "Date") {
+    //   getDateOrderedData();
+    // } else if (orderMode == "ReverseDate") {
+    //   getReverseDateOrderedData();
+    // } else if (orderMode == "Hitrate") {
+    //   getHitrateOrderedData();
+    // } else if (orderMode == "ReverseHitrate") {
+    //   getReverseHitrateOrderedData();
+    // }
+  }, [orderMode]);
+
+  /* isEnter가 바뀔 때를 검색으로 가정하고 Points를 비워줌 */
+  useEffect(() => {
+    if (isEnter == true) {
+      setPoints([]);
+      setIsEnter(false);
+      setPageIndex(1);
+    }
+  }, [isEnter]);
+
   const [tabs, setTabs] = useState("sell");
   const Analytics = () => {
     const classes = useStyles();
@@ -331,6 +505,10 @@ const StockInfo = () => {
                 width="420px"
                 height="50px"
                 placeholder="애널리스트 명, 소속 기관, 리포트 제목"
+                searchText={searchText}
+                setSearchText={setSearchText}
+                isEnter={isEnter}
+                setIsEnter={setIsEnter}
               />
               <Filter
                 width="700px"
@@ -340,6 +518,8 @@ const StockInfo = () => {
                 First="날짜"
                 Second="리포트 적중률"
                 Third="평균 적중률"
+                OrderMode={orderMode}
+                SetOrder={setOrderMode}
               />
             </Flex>
             <ContentsContainer>
@@ -386,7 +566,27 @@ const StockInfo = () => {
                     />
                   </Flex>
                 </Flex>
-                <ContentBox />
+                <List>
+                  {Points.map((el, idx) => {
+                    return (
+                      <ContentBox
+                        id={el.id}
+                        title={el.title}
+                        listItems={el.points}
+                        price={el.target_price}
+                        date={el.publish_date}
+                        analystname={el.analyst_data.name}
+                        one={el.hit_rate * 100}
+                        two={el.days_to_first_hit}
+                        three={el.days_to_first_miss}
+                        four={el.analyst_data.history.avg_days_hit}
+                        five={el.analyst_data.history.avg_days_to_first_hit}
+                        six={el.analyst_data.history.avg_days_to_first_miss}
+                      />
+                    );
+                  })}
+                  <VisuallyHidden ref={ref} />
+                </List>
               </Flex>
             </ContentsContainer>
           </Flex>
@@ -457,4 +657,13 @@ const ContentsBox = styled.div`
   padding-top: 20px;
   padding-bottom: 20px;
   border-top: 1px solid #d5d8dc;
+`;
+const List = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+const VisuallyHidden = styled.div`
+  width: 1px;
+  height: 1px;
+  display: hidden;
 `;
