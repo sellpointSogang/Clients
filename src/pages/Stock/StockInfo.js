@@ -43,10 +43,11 @@ const ContentBox = ({
   five,
   six,
 }) => {
+  let dateString = date;
+  let newDateString = dateString.replace(/-/g, ".");
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
   const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
-
   const [pointList, setPointList] = useState([]);
   useEffect(() => {
     setPointList([...listItems]);
@@ -105,24 +106,28 @@ const ContentBox = ({
                 </li>
               ))}
           </ul>
-          <Text
-            cursor="pointer"
-            weight={800}
-            size={16}
-            color={palette.color_barFill}
-            onClick={toggleExpand}
-          >
-            {isExpanded ? `접기` : `...더보기`}
+          {pointList.length > 3 ? (
+            <Text
+              cursor="pointer"
+              weight={800}
+              size={16}
+              color={palette.color_barFill}
+              onClick={toggleExpand}
+            >
+              {isExpanded ? `접기` : `...더보기`}
+            </Text>
+          ) : (
+            <></>
+          )}
+        </Flex>
+        <Flex width="70px" direction="row">
+          <Text size={16} color={palette.color_mainText} weight={500}>
+            ₩{Math.round(price)}
           </Text>
         </Flex>
         <Flex width="70px" direction="row">
           <Text size={16} color={palette.color_mainText} weight={500}>
-            {price}
-          </Text>
-        </Flex>
-        <Flex width="70px" direction="row">
-          <Text size={16} color={palette.color_mainText} weight={500}>
-            {date}
+            {newDateString}
           </Text>
         </Flex>
         <Flex width="92px" direction="row">
@@ -353,7 +358,7 @@ const StockInfo = () => {
   const getAvgHitrateOrderedData = () => {
     axios
       .get(
-        `${API_URL}stocks/2/reports?page=${pageIndex}&page_size=4&ordering=min_analyst_hit_rate&query=${searchText}`
+        `${API_URL}stocks/2/reports?page=${pageIndex}&page_size=4&ordering=analyst_max_hit_rate&query=${searchText}`
       )
       .then((response) => {
         setPoints((prevData) => [...prevData, ...response.data.results]);
@@ -366,7 +371,7 @@ const StockInfo = () => {
   const getAvgReverseHitrateOrderedData = () => {
     axios
       .get(
-        `${API_URL}stocks/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=-min_analyst_hit_rate&query=${searchText}`
+        `${API_URL}stocks/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=--analyst_max_hit_rate&query=${searchText}`
       )
       .then((response) => {
         setPoints((prevData) => [...prevData, ...response.data.results]);
