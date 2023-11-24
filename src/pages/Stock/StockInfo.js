@@ -648,6 +648,29 @@ const StockInfo = () => {
                   </Flex>
                 </Flex>
                 <List>
+                  {/* {Points.map((el, idx) => {
+                    return (
+                      <ContentBox
+                        id={el.id}
+                        analystId={el.analyst_data.id}
+                        title={el.title}
+                        listItems={el.points}
+                        price={el.target_price}
+                        date={el.publish_date}
+                        analystname={el.analyst_data.name}
+                        one={Math.round(el.hit_rate * 100)}
+                        two={el.days_to_first_hit}
+                        three={el.days_to_first_miss}
+                        four={Math.round(el.analyst_data.history.avg_days_hit)}
+                        five={Math.round(
+                          el.analyst_data.history.avg_days_to_first_hit
+                        )}
+                        six={Math.round(
+                          el.analyst_data.history.avg_days_to_first_miss
+                        )}
+                      />
+                    );
+                  })} */}
                   {Points.map((el, idx) => {
                     if (el.analyst_data == null) {
                       return (
@@ -667,13 +690,40 @@ const StockInfo = () => {
                           six="준비중"
                         />
                       );
-                    } else if (
-                      el.analyst_data.name != null &&
-                      (el.analyst_data.history.avg_days_hit == null ||
-                        el.analyst_data.history.avg_datys_to_first_hit ==
-                          null ||
-                        el.analyst_data.history.avg_days_to_first_miss == null)
-                    ) {
+                    }
+                    // else if (
+                    //   el.analyst_data.name != null &&
+                    //   (el.analyst_data.history.avg_days_hit == null ||
+                    //     el.analyst_data.history.avg_datys_to_first_hit ==
+                    //       null ||
+                    //     el.analyst_data.history.avg_days_to_first_miss == null)
+                    // )
+                    // {
+                    //   return (
+                    //     <ContentBox
+                    //       id={el.id}
+                    //       analystId={el.analyst_data.id}
+                    //       title={el.title}
+                    //       listItems={el.points}
+                    //       price={el.target_price}
+                    //       date={el.publish_date}
+                    //       analystname={el.analyst_data.name}
+                    //       one={Math.round(el.hit_rate * 100)}
+                    //       two={el.days_to_first_hit}
+                    //       three={el.days_to_first_miss}
+                    //       four="준비중"
+                    //       five="준비중"
+                    //       six="준비중"
+                    //     />
+                    //   );
+                    // }
+                    else {
+                      // if (
+                      //   el.analyst_data.name != null &&
+                      //   el.analyst_data.history.avg_days_hit != null &&
+                      //   el.analyst_data.history.avg_datys_to_first_hit != null &&
+                      //   el.analyst_data.history.avg_days_to_first_miss != null
+                      // ) {
                       return (
                         <ContentBox
                           id={el.id}
@@ -686,32 +736,15 @@ const StockInfo = () => {
                           one={Math.round(el.hit_rate * 100)}
                           two={el.days_to_first_hit}
                           three={el.days_to_first_miss}
-                          four="준비중"
-                          five="준비중"
-                          six="준비중"
-                        />
-                      );
-                    } else if (
-                      el.analyst_data.name != null &&
-                      el.analyst_data.history.avg_days_hit != null &&
-                      el.analyst_data.history.avg_datys_to_first_hit != null &&
-                      el.analyst_data.history.avg_days_to_first_miss != null
-                    ) {
-                      return (
-                        <ContentBox
-                          id={el.id}
-                          analystId={el.analyst_data.id}
-                          title={el.title}
-                          listItems={el.points}
-                          price={el.target_price}
-                          date={el.publish_date}
-                          analystname={el.analyst_data.name}
-                          one={Math.round(el.hit_rate * 100)}
-                          two={el.days_to_first_hit}
-                          three={el.days_to_first_miss}
-                          four={el.analyst_data.history.avg_days_hit}
-                          five={el.analyst_data.history.avg_days_to_first_hit}
-                          six={el.analyst_data.history.avg_days_to_first_miss}
+                          four={Math.round(
+                            el.analyst_data.history.avg_days_hit
+                          )}
+                          five={Math.round(
+                            el.analyst_data.history.avg_days_to_first_hit
+                          )}
+                          six={Math.round(
+                            el.analyst_data.history.avg_days_to_first_miss
+                          )}
                         />
                       );
                     }
