@@ -12,6 +12,9 @@ const Bar = ({
   progressTop,
   children,
 }) => {
+  if (percentage == `준비중%`) {
+    percentage = 0;
+  }
   return (
     <BarBase height={height} width={width}>
       <BarFill percentage={percentage}>

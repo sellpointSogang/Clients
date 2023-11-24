@@ -10,9 +10,10 @@ import Filter from "@pages/Analyst/components/Filter";
 import HoverDescription from "@components/organisms/HoverDescription";
 import { Content } from "antd/es/layout/layout";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 const ContentBox = ({
   id,
+  stockId,
   title,
   listItems,
   price,
@@ -24,6 +25,7 @@ const ContentBox = ({
   two,
   three,
 }) => {
+  const navigate = useNavigate();
   const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
   const [isExpanded, setIsExpanded] = useState(false);
   const [pointList, setPointList] = useState([]);
@@ -120,6 +122,11 @@ const ContentBox = ({
               weight={500}
               cursor="pointer"
               textDecoration="underline"
+              onClick={() => {
+                if (stockname != null && stockname != "준비중") {
+                  navigate(`/stock/${stockId}/${stockname}`);
+                }
+              }}
             >
               {stockname}
             </Text>
@@ -144,7 +151,7 @@ const ContentBox = ({
               progressLeft="5px"
               progressTop="3.97px"
             >
-              {`${one}%`}
+              {one == `준비중` ? `준비중` : `${one}%`}
             </Bar>
           </Flex>
           <Flex align="start" gap={5}>
@@ -160,7 +167,7 @@ const ContentBox = ({
               progressLeft="5px"
               progressTop="3.97px"
             >
-              {`${two}%`}
+              {two == `준비중` ? `준비중` : `${two}일`}
             </Bar>
           </Flex>
           <Flex align="start" gap={5}>
@@ -176,7 +183,7 @@ const ContentBox = ({
               progressLeft="5px"
               progressTop="3.97px"
             >
-              {`${three}일`}
+              {three == `준비중` ? `준비중` : `${three}%`}
             </Bar>
           </Flex>
         </Flex>
