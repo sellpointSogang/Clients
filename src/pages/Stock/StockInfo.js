@@ -268,6 +268,7 @@ const StockInfo = () => {
   const [searchText, setSearchText] = useState("");
   /* 검색 기능을 위해 엔터 키인지 판별, searchInput에 prop으로 전달 */
   const [isEnter, setIsEnter] = useState(false);
+  const [dateForChart, setDateForChart] = useState([]);
   const [Points, setPoints] = useState([]);
   const [nextPage, setNextPage] = useState("");
   const [stockProfile, setStockProfile] = useState([]);
@@ -296,10 +297,13 @@ const StockInfo = () => {
   useEffect(() => {
     getStockProfile();
   }, []);
-
-  // useEffect(() => {
-  //   console.log(stockProfile);
-  // }, [stockProfile]);
+  let filteredDate;
+  useEffect(() => {
+    filteredDate = stockProfile.filter((element) =>
+      element.basDt.endsWith("01")
+    );
+    setDateForChart((prev) => [...prev, ...filteredDate]);
+  }, [stockProfile]);
 
   /* 날짜 정렬 버전 받아오는 함수 */
   const getDateOrderedData = () => {
@@ -450,7 +454,7 @@ const StockInfo = () => {
   /* 차트 부분 */
   const Analytics = () => {
     const classes = useStyles();
-    const [data, setData] = useState(stockProfile);
+    const [data, setData] = useState(dateForChart);
 
     // const fetchCustomData = (key) => {
     //   setData(dataSet[key]);
