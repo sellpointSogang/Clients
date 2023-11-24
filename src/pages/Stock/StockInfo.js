@@ -436,13 +436,15 @@ const StockInfo = () => {
   }, [isEnter]);
 
   const [tabs, setTabs] = useState("sell");
+
+  /* 차트 부분 */
   const Analytics = () => {
     const classes = useStyles();
-    const [data, setData] = useState(dataSet.Today);
+    const [data, setData] = useState(stockProfile);
 
-    const fetchCustomData = (key) => {
-      setData(dataSet[key]);
-    };
+    // const fetchCustomData = (key) => {
+    //   setData(dataSet[key]);
+    // };
 
     return (
       <div className={classes.container}>

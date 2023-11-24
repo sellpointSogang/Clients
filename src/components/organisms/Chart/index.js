@@ -47,10 +47,15 @@ const Chart = ({ data }) => {
             contentStyle={{ backgroundColor: "#0A1322" }}
           />
           <CartesianGrid strokeDasharray="4 4" stroke="#8884d8" opacity={0.4} />
-          <XAxis dataKey="name" tick={{ fill: "#B6BAC3" }} stroke="#EEEEEE" />
+          <XAxis
+            dataKey="basDt"
+            tick={{ fill: "#B6BAC3" }}
+            stroke="#EEEEEE"
+            reversed
+          />
           <YAxis tick={{ fill: "#B6BAC3" }} stroke="#EEEEEE" />
           <Area
-            dataKey="view"
+            dataKey="clpr"
             type="monotone"
             stroke="#8884d8"
             strokeWidth={3}
