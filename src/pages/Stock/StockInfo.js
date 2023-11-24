@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { createUseStyles } from "react-jss";
 import styled from "styled-components";
-
+import axios from "axios";
 import Flex from "@components/atoms/Flex";
 import Header from "@components/organisms/Header";
 import { palette } from "@styles/palette";
@@ -29,6 +29,22 @@ const useStyles = createUseStyles(() => ({
 }));
 
 const ContentBox = () => {
+  const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
+
+  const getProfile = () => {
+    axios
+      .get(`${API_URL}stock/stocks/1`)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data", error);
+      });
+  };
+
+  useEffect(() => {
+    getProfile();
+  }, []);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = () => {
