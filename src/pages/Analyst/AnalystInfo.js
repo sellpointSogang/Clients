@@ -371,7 +371,7 @@ const AnalystInfo = () => {
                         date={el.publish_date}
                         code={el.code}
                         stockname={el.stock.name}
-                        reportTye={el.hidden_sentiment}
+                        reportType={el.hidden_sentiment}
                         one={el.hit_rate * 100}
                         two={el.days_to_first_hit}
                         three={el.days_to_first_miss}
