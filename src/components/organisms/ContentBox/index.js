@@ -91,19 +91,23 @@ const ContentBox = ({
               <></>
             )}
           </ul>
-          <Text
-            cursor="pointer"
-            weight={800}
-            size={16}
-            color={palette.color_barFill}
-            onClick={toggleExpand}
-          >
-            {isExpanded ? `접기` : `...더보기`}
-          </Text>
+          {pointList.length > 3 ? (
+            <Text
+              cursor="pointer"
+              weight={800}
+              size={16}
+              color={palette.color_barFill}
+              onClick={toggleExpand}
+            >
+              {isExpanded ? `접기` : `...더보기`}
+            </Text>
+          ) : (
+            <></>
+          )}
         </Flex>
         <Flex width="86.25px" direction="row">
           <Text size={16} color={palette.color_mainText} weight={500}>
-            {price}
+            ₩{Math.round(price)}
           </Text>
         </Flex>
         <Flex width="86.25px" direction="row">
