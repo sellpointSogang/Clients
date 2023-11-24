@@ -297,12 +297,12 @@ const StockInfo = () => {
   useEffect(() => {
     getStockProfile();
   }, []);
-  let filteredDate;
+  let filteredDate1;
   useEffect(() => {
-    filteredDate = stockProfile.filter((element) =>
-      element.basDt.endsWith("01")
+    filteredDate1 = stockProfile.filter(
+      (element) => element.basDt.endsWith("01") || element.basDt.endsWith("15")
     );
-    setDateForChart((prev) => [...prev, ...filteredDate]);
+    setDateForChart((prev) => [...prev, ...filteredDate1]);
   }, [stockProfile]);
 
   /* 날짜 정렬 버전 받아오는 함수 */
