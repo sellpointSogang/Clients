@@ -56,13 +56,10 @@ const data_2 = [
   },
 ];
 
-const dataSet = {
-  Today: data_1,
-  Yesterday: data_2,
-  Last_7_days: data_1,
-  Last_14_days: data_2,
-  Last_30_days: data_1,
-  Last_90_days: data_2,
-};
-
+const dataSet = [
+  { view: 60000, name: "1년 전" },
+  { view: 72500, name: "9개월 전" },
+  { view: 74000, name: "6개월 전" },
+  { view: 74500, name: "3개월 전" },
+];
 export default dataSet;
