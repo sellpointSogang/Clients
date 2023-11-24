@@ -248,7 +248,7 @@ const ContentBox = ({
 const StockInfo = () => {
   const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
   const STOCK_PRICE_SERVICE_KEY = `CA1zwv3I4OWtM+mg9/8gPEgF+MwCgX+v1RhvZHq1SGNvSj/cw9P2XqrLCwvohtCiIbTu3rCDVRV+2yZmV9mIpg==`;
-  const STOCK_PRICE_API_BASE_URL = `http://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo`;
+  const STOCK_PRICE_API_BASE_URL = `https://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo`;
 
   let params = useParams();
 
