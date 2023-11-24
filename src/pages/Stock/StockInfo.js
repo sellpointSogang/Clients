@@ -58,7 +58,7 @@ const ContentBox = ({
     axios
       .get(`${API_URL}reports/${id}/points`)
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setPointList([...response.data]);
       })
       .catch((error) => {
@@ -292,9 +292,9 @@ const StockInfo = () => {
     getStockProfile();
   }, []);
 
-  useEffect(() => {
-    console.log(stockProfile);
-  }, [stockProfile]);
+  // useEffect(() => {
+  //   console.log(stockProfile);
+  // }, [stockProfile]);
 
   /* 날짜 정렬 버전 받아오는 함수 */
   const getDateOrderedData = () => {
@@ -419,6 +419,7 @@ const StockInfo = () => {
   useEffect(() => {
     setPoints([]);
     setPageIndex(1);
+    console.log(orderMode);
     // if (orderMode == "Date") {
     //   getDateOrderedData();
     // } else if (orderMode == "ReverseDate") {
