@@ -44,10 +44,10 @@ const SearchInput = ({
 
   const handleKeyPress = (e) => {
     let key = e.key || e.keycode;
-    console.log(key);
+    // console.log(key);
     if (key === "Enter") {
       setIsEnter(true);
-      console.log(isEnter);
+      // console.log(isEnter);
     }
   };
 
