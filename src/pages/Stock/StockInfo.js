@@ -15,7 +15,6 @@ import Chart from "@components/organisms/Chart";
 import DropdownSelector from "@components/organisms/ChartMenu";
 import dataSet from "@/utils/ChartData";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 
 const useStyles = createUseStyles(() => ({
   container: {
@@ -48,12 +47,11 @@ const ContentBox = () => {
     getProfile();
   }, []);
   const [isExpanded, setIsExpanded] = useState(false);
-  const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
 
   const [pointList, setPointList] = useState([]);
-  useEffect(() => {
-    setPointList([...listItems]);
-  }, []);
+  // useEffect(() => {
+  //   setPointList([...listItems]);
+  // }, []);
   const toggleExpand = () => {
     setIsExpanded(!isExpanded);
   };
@@ -68,6 +66,7 @@ const ContentBox = () => {
         console.error("Error fetching data:", error);
       });
   };
+
   useEffect(() => {
     setPointList([]);
     getFullPoints(id);
