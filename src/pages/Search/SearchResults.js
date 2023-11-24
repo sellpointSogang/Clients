@@ -23,7 +23,7 @@ const SearchResults = ({ stockList, anList }) => {
         {stockList.map((el, idx) => {
           return (
             <ResultContents
-              onClick={() => navigate(`/stock/${el.id}/${el.name}/${el.code}`)}
+              onClick={() => navigate(`/stock/${el.id}/${el.name}`)}
             >
               <ResultLeft>{el.name}</ResultLeft>
               <ResultRight>{el.code}</ResultRight>

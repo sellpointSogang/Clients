@@ -216,7 +216,7 @@ const AnalystInfo = () => {
                         progressLeft="5px"
                         progressTop="3.97px"
                       >
-                        {profile.hit_rate * 100}%
+                        {Math.round(profile.hit_rate * 100)}%
                       </Bar>
                     </Flex>
                     <Flex gap={11} align="start">
@@ -239,7 +239,7 @@ const AnalystInfo = () => {
                         progressLeft="5px"
                         progressTop="3.97px"
                       >
-                        {profile.avg_days_to_first_hit}일
+                        {Math.round(profile.avg_days_to_first_hit)}일
                       </Bar>
                     </Flex>
                     <Flex gap={11} align="start">
@@ -262,7 +262,7 @@ const AnalystInfo = () => {
                         progressLeft="5px"
                         progressTop="3.97px"
                       >
-                        {profile.avg_days_to_first_miss}일
+                        {Math.round(profile.avg_days_to_first_miss)}일
                       </Bar>
                     </Flex>
                   </Flex>
@@ -362,21 +362,45 @@ const AnalystInfo = () => {
                 </Wrapper>
                 <List>
                   {Points.map((el, idx) => {
-                    return (
-                      <ContentBox
-                        id={el.id}
-                        title={el.title}
-                        listItems={el.points}
-                        price={el.target_price}
-                        date={el.publish_date}
-                        code={el.code}
-                        stockname={el.stock.name}
-                        reportTye={el.hidden_sentiment}
-                        one={el.hit_rate * 100}
-                        two={el.days_to_first_hit}
-                        three={el.days_to_first_miss}
-                      />
-                    );
+                    if (
+                      el.hit_rate == null ||
+                      el.days_to_first_hit == null ||
+                      el.days_to_first_miss == null
+                    ) {
+                      return (
+                        <ContentBox
+                          id={el.id}
+                          stockId={el.stock.id}
+                          title={el.title}
+                          listItems={el.points}
+                          price={el.target_price}
+                          date={el.publish_date}
+                          code={el.code}
+                          stockname={el.stock.name}
+                          reportTye={el.hidden_sentiment}
+                          one="준비중"
+                          two="준비중"
+                          three="준비중"
+                        />
+                      );
+                    } else {
+                      return (
+                        <ContentBox
+                          id={el.id}
+                          stockId={el.stock.id}
+                          title={el.title}
+                          listItems={el.points}
+                          price={el.target_price}
+                          date={el.publish_date}
+                          code={el.code}
+                          stockname={el.stock.name}
+                          reportTye={el.hidden_sentiment}
+                          one={Math.round(el.hit_rate * 100)}
+                          two={el.days_to_first_hit}
+                          three={el.days_to_first_miss}
+                        />
+                      );
+                    }
                   })}
                   <VisuallyHidden ref={ref} />
                 </List>

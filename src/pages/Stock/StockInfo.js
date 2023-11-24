@@ -9,11 +9,10 @@ import SearchInput from "@components/molecules/SearchInput";
 import Filter from "../Stock/components/Filter/index";
 import HoverDescription from "@components/organisms/HoverDescription";
 import Bar from "@components/molecules/Bar";
-
 import Chart from "@components/organisms/Chart";
 import DropdownSelector from "@components/organisms/ChartMenu";
 import dataSet from "@/utils/ChartData";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const useStyles = createUseStyles(() => ({
@@ -31,6 +30,7 @@ const useStyles = createUseStyles(() => ({
 
 const ContentBox = ({
   id,
+  analystId,
   title,
   listItems,
   price,
@@ -43,6 +43,7 @@ const ContentBox = ({
   five,
   six,
 }) => {
+  const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
   const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
 
@@ -126,15 +127,18 @@ const ContentBox = ({
         </Flex>
         <Flex width="92px" direction="row">
           <Flex>
-            <Text size={12} color={palette.color_subText} weight={600}>
-              {" "}
-            </Text>
+            <Text size={12} color={palette.color_subText} weight={600}></Text>
             <Text
               size={16}
               color={palette.color_mainText}
               weight={500}
               cursor="pointer"
               textDecoration="underline"
+              onClick={() => {
+                if (analystname != null) {
+                  navigate(`/analyst/${analystId}`);
+                }
+              }}
             >
               {analystname}
             </Text>
@@ -154,7 +158,7 @@ const ContentBox = ({
               progressLeft="5px"
               progressTop="3.97px"
             >
-              {`${one}%`}
+              {one == null ? `준비중` : `${one}%`}
             </Bar>
           </Flex>
           <Flex align="start" gap={5}>
@@ -204,7 +208,7 @@ const ContentBox = ({
               progressLeft="5px"
               progressTop="3.97px"
             >
-              {`${four}일`}
+              {four == `준비중` ? `준비중` : `${four}일`}
             </Bar>
           </Flex>
           <Flex align="start" gap={5}>
@@ -220,7 +224,7 @@ const ContentBox = ({
               progressLeft="5px"
               progressTop="3.97px"
             >
-              {`${five}일`}
+              {five == `준비중` ? `준비중` : `${five}일`}
             </Bar>
           </Flex>
           <Flex align="start" gap={5}>
@@ -236,7 +240,7 @@ const ContentBox = ({
               progressLeft="5px"
               progressTop="3.97px"
             >
-              {`${six}일`}
+              {six == `준비중` ? `준비중` : `${six}일`}
             </Bar>
           </Flex>
         </Flex>
@@ -468,7 +472,9 @@ const StockInfo = () => {
               <Flex justify="flex-end" height="90%">
                 <Flex align="flex-start" gap={20}>
                   <Text weight={600} size={20} color={palette.color_subText}>
-                    {params.code}
+                    {stockProfile.length === 0
+                      ? ``
+                      : `${stockProfile[0].srtnCd}`}
                   </Text>
                   <Text weight={800} size={36} color={palette.color_mainText}>
                     {params.name}
@@ -633,22 +639,72 @@ const StockInfo = () => {
                 </Flex>
                 <List>
                   {Points.map((el, idx) => {
-                    return (
-                      <ContentBox
-                        id={el.id}
-                        title={el.title}
-                        listItems={el.points}
-                        price={el.target_price}
-                        date={el.publish_date}
-                        // analystname={el.analyst_data.name}
-                        one={el.hit_rate * 100}
-                        two={el.days_to_first_hit}
-                        three={el.days_to_first_miss}
-                        // four={el.analyst_data.history.avg_days_hit}
-                        // five={el.analyst_data.history.avg_days_to_first_hit}
-                        // six={el.analyst_data.history.avg_days_to_first_miss}
-                      />
-                    );
+                    if (el.analyst_data == null) {
+                      return (
+                        <ContentBox
+                          id={el.id}
+                          analystId={-1}
+                          title={el.title}
+                          listItems={el.points}
+                          price={el.target_price}
+                          date={el.publish_date}
+                          analystname="준비중"
+                          one={Math.round(el.hit_rate * 100)}
+                          two={el.days_to_first_hit}
+                          three={el.days_to_first_miss}
+                          four="준비중"
+                          five="준비중"
+                          six="준비중"
+                        />
+                      );
+                    } else if (
+                      el.analyst_data.name != null &&
+                      (el.analyst_data.history.avg_days_hit == null ||
+                        el.analyst_data.history.avg_datys_to_first_hit ==
+                          null ||
+                        el.analyst_data.history.avg_days_to_first_miss == null)
+                    ) {
+                      return (
+                        <ContentBox
+                          id={el.id}
+                          analystId={el.analyst_data.id}
+                          title={el.title}
+                          listItems={el.points}
+                          price={el.target_price}
+                          date={el.publish_date}
+                          analystname={el.analyst_data.name}
+                          one={Math.round(el.hit_rate * 100)}
+                          two={el.days_to_first_hit}
+                          three={el.days_to_first_miss}
+                          four="준비중"
+                          five="준비중"
+                          six="준비중"
+                        />
+                      );
+                    } else if (
+                      el.analyst_data.name != null &&
+                      el.analyst_data.history.avg_days_hit != null &&
+                      el.analyst_data.history.avg_datys_to_first_hit != null &&
+                      el.analyst_data.history.avg_days_to_first_miss != null
+                    ) {
+                      return (
+                        <ContentBox
+                          id={el.id}
+                          analystId={el.analyst_data.id}
+                          title={el.title}
+                          listItems={el.points}
+                          price={el.target_price}
+                          date={el.publish_date}
+                          analystname={el.analyst_data.name}
+                          one={Math.round(el.hit_rate * 100)}
+                          two={el.days_to_first_hit}
+                          three={el.days_to_first_miss}
+                          four={el.analyst_data.history.avg_days_hit}
+                          five={el.analyst_data.history.avg_days_to_first_hit}
+                          six={el.analyst_data.history.avg_days_to_first_miss}
+                        />
+                      );
+                    }
                   })}
                   <VisuallyHidden ref={ref} />
                 </List>
