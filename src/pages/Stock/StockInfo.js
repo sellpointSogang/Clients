@@ -43,10 +43,11 @@ const ContentBox = ({
   five,
   six,
 }) => {
+  let dateString = date;
+  let newDateString = dateString.replace(/-/g, ".");
   const navigate = useNavigate();
   const [isExpanded, setIsExpanded] = useState(false);
   const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
-
   const [pointList, setPointList] = useState([]);
   useEffect(() => {
     setPointList([...listItems]);
@@ -126,7 +127,7 @@ const ContentBox = ({
         </Flex>
         <Flex width="70px" direction="row">
           <Text size={16} color={palette.color_mainText} weight={500}>
-            {date}
+            {newDateString}
           </Text>
         </Flex>
         <Flex width="92px" direction="row">
