@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createUseStyles } from "react-jss";
 import styled from "styled-components";
-
 import Flex from "@components/atoms/Flex";
 import Header from "@components/organisms/Header";
 import { palette } from "@styles/palette";
@@ -248,6 +247,8 @@ const ContentBox = ({
 
 const StockInfo = () => {
   const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
+  const STOCK_PRICE_SERVICE_KEY = `CA1zwv3I4OWtM+mg9/8gPEgF+MwCgX+v1RhvZHq1SGNvSj/cw9P2XqrLCwvohtCiIbTu3rCDVRV+2yZmV9mIpg==`;
+  const STOCK_PRICE_API_BASE_URL = `http://apis.data.go.kr/1160100/service/GetStockSecuritiesInfoService/getStockPriceInfo`;
 
   let params = useParams();
 
@@ -260,12 +261,42 @@ const StockInfo = () => {
   const [isEnter, setIsEnter] = useState(false);
   const [Points, setPoints] = useState([]);
   const [nextPage, setNextPage] = useState("");
+  const [stockProfile, setStockProfile] = useState([]);
+  const getStockProfile = () => {
+    axios
+      .get(`${STOCK_PRICE_API_BASE_URL}`, {
+        params: {
+          serviceKey: `${STOCK_PRICE_SERVICE_KEY}`,
+          resultType: `json`,
+          itmsNm: `${params.name}`,
+          numOfRows: "365",
+        },
+      })
+      .then((response) => {
+        // console.log(response.data.response.body.items.item);
+        setStockProfile((prevData) => [
+          ...prevData,
+          ...response.data.response.body.items.item,
+        ]);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+
+  useEffect(() => {
+    getStockProfile();
+  }, []);
+
+  useEffect(() => {
+    console.log(stockProfile);
+  }, [stockProfile]);
 
   /* 날짜 정렬 버전 받아오는 함수 */
   const getDateOrderedData = () => {
     axios
       .get(
-        `${API_URL}stocks/2/reports?page=${pageIndex}&page_size=4&ordering=-publish_date&query=${searchText}`
+        `${API_URL}stocks/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=-publish_date&query=${searchText}`
       )
       .then((response) => {
         console.log(response.data);
@@ -279,7 +310,7 @@ const StockInfo = () => {
   const getReverseDateOrderedData = () => {
     axios
       .get(
-        `${API_URL}stocks/2/reports?page=${pageIndex}&page_size=4&ordering=publish_date&query=${searchText}`
+        `${API_URL}stocks/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=publish_date&query=${searchText}`
       )
       .then((response) => {
         setPoints((prevData) => [...prevData, ...response.data.results]);
@@ -292,7 +323,7 @@ const StockInfo = () => {
   const getHitrateOrderedData = () => {
     axios
       .get(
-        `${API_URL}stocks/2/reports?page=${pageIndex}&page_size=4&ordering=-hit_rate&query=${searchText}`
+        `${API_URL}stocks/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=-hit_rate&query=${searchText}`
       )
       .then((response) => {
         setPoints((prevData) => [...prevData, ...response.data.results]);
@@ -305,7 +336,7 @@ const StockInfo = () => {
   const getReverseHitrateOrderedData = () => {
     axios
       .get(
-        `${API_URL}stocks/2/reports?page=${pageIndex}&page_size=4&ordering=hit_rate&query=${searchText}`
+        `${API_URL}stocks/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=hit_rate&query=${searchText}`
       )
       .then((response) => {
         setPoints((prevData) => [...prevData, ...response.data.results]);
@@ -331,7 +362,7 @@ const StockInfo = () => {
   const getAvgReverseHitrateOrderedData = () => {
     axios
       .get(
-        `${API_URL}stocks/2/reports?page=${pageIndex}&page_size=4&ordering=-min_analyst_hit_rate&query=${searchText}`
+        `${API_URL}stocks/${params.id}/reports?page=${pageIndex}&page_size=4&ordering=-min_analyst_hit_rate&query=${searchText}`
       )
       .then((response) => {
         setPoints((prevData) => [...prevData, ...response.data.results]);
@@ -435,22 +466,54 @@ const StockInfo = () => {
               <Flex justify="flex-end" height="90%">
                 <Flex align="flex-start" gap={20}>
                   <Text weight={600} size={20} color={palette.color_subText}>
-                    005930
+                    {params.code}
                   </Text>
                   <Text weight={800} size={36} color={palette.color_mainText}>
-                    삼성전자
+                    {params.name}
                   </Text>
                   <Flex direction="row" gap={6} justify="left">
                     <Text weight={600} size={24}>
-                      ₩ 78,000
+                      {stockProfile.length === 0
+                        ? `₩`
+                        : `₩ ${stockProfile[0].clpr}`}
                     </Text>
-                    <PercentageBox>
-                      <Flex justify="center" align="center" height="100%">
-                        <Text weight={600} size={16} color={palette.color_plus}>
-                          + 0.71%
-                        </Text>
-                      </Flex>
-                    </PercentageBox>
+                    {stockProfile.length === 0 ? (
+                      <></>
+                    ) : (
+                      <PercentageBox sign={stockProfile[0].fltrt}>
+                        <Flex justify="center" align="center" height="100%">
+                          {stockProfile[0].fltrt >= 0 ? (
+                            <Text
+                              weight={600}
+                              size={16}
+                              color={palette.color_plus}
+                            >
+                              +
+                              {(
+                                ((stockProfile[1].clpr - stockProfile[0].clpr) /
+                                  stockProfile[1].clpr) *
+                                100
+                              ).toFixed(2)}
+                              %
+                            </Text>
+                          ) : (
+                            <Text
+                              weight={600}
+                              size={16}
+                              color={palette.color_minus}
+                            >
+                              -
+                              {(
+                                ((stockProfile[1].clpr - stockProfile[0].clpr) /
+                                  stockProfile[1].clpr) *
+                                100
+                              ).toFixed(2)}
+                              %
+                            </Text>
+                          )}
+                        </Flex>
+                      </PercentageBox>
+                    )}
                   </Flex>
                 </Flex>
               </Flex>
@@ -575,13 +638,13 @@ const StockInfo = () => {
                         listItems={el.points}
                         price={el.target_price}
                         date={el.publish_date}
-                        analystname={el.analyst_data.name}
+                        // analystname={el.analyst_data.name}
                         one={el.hit_rate * 100}
                         two={el.days_to_first_hit}
                         three={el.days_to_first_miss}
-                        four={el.analyst_data.history.avg_days_hit}
-                        five={el.analyst_data.history.avg_days_to_first_hit}
-                        six={el.analyst_data.history.avg_days_to_first_miss}
+                        // four={el.analyst_data.history.avg_days_hit}
+                        // five={el.analyst_data.history.avg_days_to_first_hit}
+                        // six={el.analyst_data.history.avg_days_to_first_miss}
                       />
                     );
                   })}
@@ -618,9 +681,9 @@ const PercentageBox = styled.div`
   width: 74px;
   height: 25px;
   border-radius: 5px;
-  background: rgba(255, 59, 48, 0.1);
+  background: ${(props) =>
+    props.sign >= 0 ? `  rgba(255, 59, 48, 0.1)` : `rgba(49, 130, 246, 0.10)`};
 `;
-
 const TabsWrapper = styled.div``;
 
 const SellBtn = styled.div`
