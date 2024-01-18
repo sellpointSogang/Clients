@@ -8,7 +8,7 @@ import axios from "axios";
 import SearchResults from "./SearchResults";
 
 const Search = () => {
-  const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
+  const API_URL = `https://port-0-server-51ih2alrhinkm9.sel5.cloudtype.app/`;
   /* 주식 리스트를 생성하기 위함 */
   const [stockList, setStockList] = useState([]);
   /* 애널리스트 리스트를 생성하기 위함 */

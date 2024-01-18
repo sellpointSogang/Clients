@@ -16,7 +16,7 @@ import ContentBox from "@components/organisms/ContentBox";
 import axios from "axios";
 
 const AnalystInfo = () => {
-  const API_URL = `https://port-0-server-bkcl2bloy31e46.sel5.cloudtype.app/`;
+  const API_URL = `https://port-0-server-51ih2alrhinkm9.sel5.cloudtype.app/`;
 
   /* url의 id 부분을 가져옴 */
   let params = useParams();
